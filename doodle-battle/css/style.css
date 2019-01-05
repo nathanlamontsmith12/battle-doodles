@@ -1,0 +1,26 @@
+body {
+	background-color: cadetblue;
+}
+
+input {
+	margin-right: 20px;
+}
+
+#input-container {
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+}
+
+#rules {
+	background-color: white;
+	text-align: center;
+	margin-top: 40px;
+}
+
+#battle-bar-container {
+	margin-top: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
