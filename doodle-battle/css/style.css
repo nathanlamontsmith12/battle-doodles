@@ -2,16 +2,19 @@ body {
 	background-color: cadetblue;
 }
 
-#battle-bar-container-1 {
+.bar {
 	margin-top: 40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	height: 40px;
+	width: 200px;
+}
+
+#battle-bar-container-1 {
+
 }
 
 #battle-bar-container-2 {
-	margin-top: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+
 }

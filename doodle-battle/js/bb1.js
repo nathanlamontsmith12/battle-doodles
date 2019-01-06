@@ -4,6 +4,13 @@ const canvasBB1 = document.getElementById("battle-bar-1");
 const ctxBB1 = canvasBB1.getContext("2d");
 
 const batBData1 = {
+	delayHandle: null,
+	delay: 0,
+	minDelayHit: 2,
+	maxDelayHit: 4,
+	minDelayMiss: 4,
+	maxDelayMiss: 7,
+	lastAttackHit: true,
 	active: false,
 	canW: canvasBB1.width,
 	canH: canvasBB1.height,
@@ -13,16 +20,16 @@ const batBData1 = {
 	dotF: true,
 	aniHandle: null,
 	aniX: 0,
-	minSpeed: 3,
-	maxSpeed: 7,
+	minSpeed: 5,
+	maxSpeed: 8,
 	erase () {
 		ctxBB1.clearRect(0, 0, this.canW, this.canH);
 	},
 	setSpeed () {
 		attackDot1.speed = this.minSpeed + Math.floor(Math.random()*(this.maxSpeed - this.minSpeed + 1));
-		console.log(attackDot1.speed);
 	},
 	activate () {
+		this.delay = 0;
 		this.active = true;
 		this.aniX = 0;
 		attackDot1.x = batBData1.dotR;
@@ -35,23 +42,24 @@ const batBData1 = {
 		animateDot1();
 	},
 	keypress (evt) {
-		if (batBData1.active) {
-			if (batBData1.dotMoving) {
 
+		if (evt.key === "Enter") {
+			this.activate();
+		}
+
+		if (this.active) {
+			if (this.dotMoving) {
 				if (evt.key === "a") {
-					if (batBData1.dotMoving) {
-						batBData1.dotMoving = false; 
-						stopDot1(); 
-						attackDot1.checkHit();
-						this.attackDelay()
-						this.activate();
-					}
+					this.dotMoving = false; 
+					stopDot1(); 
+					attackDot1.checkHit();
+					this.attackDelay();
 				}
 			}
 
 			if (evt.key === "q") {
-				if (batBData1.dotMoving) {
-					batBData1.dotMoving = false;
+				if (this.dotMoving) {
+					this.dotMoving = false;
 					stopDot1();
 				}
 			}
@@ -59,6 +67,24 @@ const batBData1 = {
 	},
 	attackDelay () {
 
+		this.active = false;
+				
+		if (!this.lastAttackHit) {
+			this.delay = this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
+		} else {
+			this.delay = this.minDelayHit + Math.floor(Math.random()*(this.maxDelayHit - this.minDelayHit));
+		}
+
+		this.delayHandle = setInterval(()=>{
+			if (this.delay > 0) {
+				this.delay--;
+				attackDot1.eraseDot();
+			} else {
+				clearInterval(this.delayHandle);
+				this.delay = 0;
+				this.activate();
+			};
+		}, 500)
 	}
 }
 
@@ -101,6 +127,11 @@ const attackDot1 = {
 		ctxBB1.fillStyle = "black";
 		ctxBB1.fill();
 	},
+	eraseDot () {
+		batBData1.erase();
+		battleBar1.draw();
+		hitBox1.draw();
+	},
 	moveF () {
 		this.x += this.speed;
 	},
@@ -121,23 +152,34 @@ const attackDot1 = {
 		this.moveB();
 		this.draw();		
 	},
-	checkHit () {
+	checkHit () { 
+
 		const leftLim = hitBox1.x; 
 		const rightLim = hitBox1.x + hitBox1.width;
 		
+		batBData1.lastAttackHit = false;
+
 		if (batBData1.dotF) {
 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
 				console.log("P1: PERFECT HIT!");
+				batBData1.lastAttackHit = true;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				console.log("P1: HIT!");
+				batBData1.lastAttackHit = true;
 			}
 		}
 		if (!batBData1.dotF) {
 			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
 				console.log("P1: PERFECT HIT!");
+				batBData1.lastAttackHit = true;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				console.log("P1: HIT!");
+				batBData1.lastAttackHit = true;
 			}
+		}
+
+		if (!batBData1.lastAttackHit) {
+			console.log("P1: MISS!");
 		}
 	}
 }
@@ -147,28 +189,34 @@ const attackDot1 = {
 // Animation functions -- start
 
 function animateDot1 () {
+	if (batBData1.delay <= 0) {
 
-	batBData1.aniX += attackDot1.speed;
-	
-	if (batBData1.aniX >= (canvasBB1.width - attackDot1.r*2)) {
+ 		batBData1.delay = 0;
+
+ 		clearInterval(batBData1.delayHandle);
+
+		batBData1.aniX += attackDot1.speed;
 		
-		batBData1.aniX = 0;
+		if (batBData1.aniX >= (canvasBB1.width - attackDot1.r*2)) {
+			
+			batBData1.aniX = 0;
+
+			if (batBData1.dotF) {
+				batBData1.dotF = false;
+			} else {
+				batBData1.dotF = true;
+			}
+		}
 
 		if (batBData1.dotF) {
-			batBData1.dotF = false;
-		} else {
-			batBData1.dotF = true;
+			attackDot1.animateF();
+		}
+
+		if (!batBData1.dotF) {
+			attackDot1.animateB();
 		}
 	}
 
-	if (batBData1.dotF) {
-		attackDot1.animateF();
-	}
-
-	if (!batBData1.dotF) {
-		attackDot1.animateB();
-	}
-	
 	batBData1.aniHandle = window.requestAnimationFrame(animateDot1);
 }
 
