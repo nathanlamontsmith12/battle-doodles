@@ -2,6 +2,8 @@ console.log("Battle Bar 2 Linked");
 
 const canvasBB2 = document.getElementById("battle-bar-2");
 const ctxBB2 = canvasBB2.getContext("2d");
+const message2 = document.getElementById("message-2");
+const health2 = document.getElementById("health-2");
 
 const batBData2 = {
 	delayHandle: null,
@@ -42,10 +44,6 @@ const batBData2 = {
 		animateDot2();
 	},
 	keypress (evt) {
-
-		if (evt.key === "Enter") {
-			this.activate();
-		}
 
 		if (this.active) {
 			if (this.dotMoving) {

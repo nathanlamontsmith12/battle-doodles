@@ -2,8 +2,12 @@ console.log("Battle Bar 1 Linked");
 
 const canvasBB1 = document.getElementById("battle-bar-1");
 const ctxBB1 = canvasBB1.getContext("2d");
+const message1 = document.getElementById("message-1");
+const health1 = document.getElementById("health-1");
 
 const batBData1 = {
+	damage: 0,
+	pHit: false,
 	delayHandle: null,
 	delay: 0,
 	minDelayHit: 2,
@@ -22,6 +26,14 @@ const batBData1 = {
 	aniX: 0,
 	minSpeed: 5,
 	maxSpeed: 8,
+	attack () {
+		if (this.pHit) {
+			return;
+		}
+		if (!this.lastAttackHit) {
+			return;
+		}
+	},
 	erase () {
 		ctxBB1.clearRect(0, 0, this.canW, this.canH);
 	},
@@ -43,16 +55,13 @@ const batBData1 = {
 	},
 	keypress (evt) {
 
-		if (evt.key === "Enter") {
-			this.activate();
-		}
-
 		if (this.active) {
 			if (this.dotMoving) {
 				if (evt.key === "a") {
 					this.dotMoving = false; 
 					stopDot1(); 
 					attackDot1.checkHit();
+					this.attack();
 					this.attackDelay();
 				}
 			}
@@ -82,9 +91,14 @@ const batBData1 = {
 			} else {
 				clearInterval(this.delayHandle);
 				this.delay = 0;
+				this.dealDamage();
 				this.activate();
 			};
 		}, 500)
+	},
+	dealDamage () {
+		player2.health = player2.health -= this.damage;
+		player2.displayHealth();
 	}
 }
 
@@ -161,25 +175,32 @@ const attackDot1 = {
 
 		if (batBData1.dotF) {
 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
-				console.log("P1: PERFECT HIT!");
+				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
+				batBData1.pHit = true;
+				batBData1.damage = this.speed;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("P1: HIT!");
+				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
+				batBData1.damage = this.speed;
 			}
 		}
 		if (!batBData1.dotF) {
 			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
-				console.log("P1: PERFECT HIT!");
+				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
+				batBData1.pHit = true;
+				batBData1.damage = this.speed;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("P1: HIT!");
+				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
+				batBData1.damage = this.speed;
 			}
 		}
 
 		if (!batBData1.lastAttackHit) {
-			console.log("P1: MISS!");
+			message1.textContent = "MISS!";
+			batBData1.damage = 0;
 		}
 	}
 }

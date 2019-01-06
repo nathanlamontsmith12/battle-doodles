@@ -4,11 +4,20 @@ body {
 
 .bar {
 	margin-top: 40px;
+	display: inline-flex;
+	justify-content: space-around;
+	height: 40px;
+	width: 500px;
+}
+
+.window {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-around;
 	height: 40px;
 	width: 200px;
+	border: 2px solid black;
+	background-color: white;
 }
 
 #battle-bar-container-1 {
