@@ -1,179 +1,173 @@
 console.log("Battle Bar 2 linked");
 
-// const canvasBB1 = document.getElementById("battle-bar-1");
-// const ctxBB1 = canvasBB1.getContext("2d");
+const canvasBB2 = document.getElementById("battle-bar-2");
+const ctxBB2 = canvasBB2.getContext("2d");
 
-// const batBData1 = {
-// 	active: false,
-// 	canW: canvasBB1.width,
-// 	canH: canvasBB1.height,
-// 	hitW: 20,
-// 	dotR: 7,
-// 	dotMoving: false,
-// 	dotF: true,
-// 	aniHandle: null,
-// 	aniX: 0,
-// 	erase () {
-// 		ctxBB1.clearRect(0, 0, this.canW, this.canH);
-// 	},
-// 	setSpeed () {
-// 		const newSpeed = input.value;
-// 		const validInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-// 		if (validInputs.includes(newSpeed)) {
-// 			attackDot1.speed = parseInt(newSpeed);
-// 		} else {
-// 			alert("Please enter valid speed!");
-// 		}
-// 	},
-// 	activate () {
-// 		this.active = true;
-// 		battleBar1.draw();
-// 		hitBox1.draw();
-// 		attackDot1.draw();
-// 	},
-// 	keypress (evt) {
-// 		if (batBData1.active) {
-// 			if (batBData1.dotMoving) {
+const batBData2 = {
+	active: false,
+	canW: canvasBB2.width,
+	canH: canvasBB2.height,
+	hitW: 20,
+	dotR: 7,
+	dotMoving: false,
+	dotF: true,
+	aniHandle: null,
+	aniX: 0,
+	erase () {
+		ctxBB2.clearRect(0, 0, this.canW, this.canH);
+	},
+	setSpeed () {
+		// NEED TO WRITE NEW CODE HERE [identical to BB1]
+	},
+	activate () {
+		this.active = true;
+		battleBar2.draw();
+		hitBox2.draw();
+		attackDot2.draw();
+	},
+	keypress (evt) {
+		if (batBData2.active) {
+			if (batBData2.dotMoving) {
 
-// 				if (evt.key === "a") {
-// 					if (batBData1.dotMoving) {
-// 						batBData1.dotMoving = false; // --> comment out to keep dot moving
-// 						stopDot1(); // --> comment out to keep dot moving 
-// 						attackDot1.checkHit();
-// 					}
-// 				}
-// 			}
+				if (evt.key === "j") {
+					if (batBData2.dotMoving) {
+						batBData2.dotMoving = false; // --> comment out to keep dot moving
+						stopDot2(); // --> comment out to keep dot moving 
+						attackDot2.checkHit();
+					}
+				}
+			}
 
-// 			if (evt.key === "Enter") {
+			if (evt.key === "Enter") {
 
-// 				if (!batBData1.dotMoving) {
-// 					batBData1.dotMoving = true;
-// 					animateDot1();
-// 				}
-// 			}
+				if (!batBData2.dotMoving) {
+					batBData2.dotMoving = true;
+					animateDot2();
+				}
+			}
 
-// 			if (evt.key === "q") {
-// 				if (batBData1.dotMoving) {
-// 					batBData1.dotMoving = false;
-// 					stopDot1();
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+			if (evt.key === "q") {
+				if (batBData2.dotMoving) {
+					batBData2.dotMoving = false;
+					stopDot2();
+				}
+			}
+		}
+	}
+}
 
-// const battleBar1 = {
-// 	x: 0,
-// 	y: 0,
-// 	width: batBData1.canW,
-// 	height: batBData1.canH,
-// 	color: "white",
-// 	draw () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.rect(this.x, this.y, this.width, this.height);
-// 		ctxBB1.fillStyle = this.color;
-// 		ctxBB1.fill();
-// 	}
-// }
+const battleBar2 = {
+	x: 0,
+	y: 0,
+	width: batBData2.canW,
+	height: batBData2.canH,
+	color: "white",
+	draw () {
+		ctxBB2.beginPath();
+		ctxBB2.rect(this.x, this.y, this.width, this.height);
+		ctxBB2.fillStyle = this.color;
+		ctxBB2.fill();
+	}
+}
 
-// const hitBox1 = {
-// 	x: batBData1.canW/2 - batBData1.hitW/2,
-// 	y: 0, 
-// 	width: batBData1.hitW,
-// 	height: batBData1.canH,
-// 	color: "red",
-// 	draw () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.rect(this.x, this.y, this.width, this.height);
-// 		ctxBB1.fillStyle = this.color;
-// 		ctxBB1.fill();
-// 	}
-// }
+const hitBox2 = {
+	x: batBData2.canW/2 - batBData2.hitW/2,
+	y: 0, 
+	width: batBData2.hitW,
+	height: batBData2.canH,
+	color: "red",
+	draw () {
+		ctxBB2.beginPath();
+		ctxBB2.rect(this.x, this.y, this.width, this.height);
+		ctxBB2.fillStyle = this.color;
+		ctxBB2.fill();
+	}
+}
 
-// const attackDot1 = {
-// 	x: batBData1.dotR,
-// 	y: batBData1.canH/2, 
-// 	r: batBData1.dotR,
-// 	speed: 1,
-// 	draw () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.arc(this.x, this.y, this.r, 0, 2*Math.PI);
-// 		ctxBB1.fillStyle = "black";
-// 		ctxBB1.fill();
-// 	},
-// 	moveF () {
-// 		this.x += this.speed;
-// 	},
-// 	moveB () {
-// 		this.x -= this.speed;
-// 	},
-// 	animateF () { 
-// 		batBData1.erase();
-// 		battleBar1.draw();
-// 		hitBox1.draw();
-// 		this.moveF();
-// 		this.draw();
-// 	},
-// 	animateB () {
-// 		batBData1.erase();
-// 		battleBar1.draw();
-// 		hitBox1.draw();
-// 		this.moveB();
-// 		this.draw();		
-// 	},
-// 	checkHit () {
-// 		const leftLim = hitBox1.x; 
-// 		const rightLim = hitBox1.x + hitBox1.width;
+const attackDot2 = {
+	x: batBData2.dotR,
+	y: batBData2.canH/2, 
+	r: batBData2.dotR,
+	speed: 1,
+	draw () {
+		ctxBB2.beginPath();
+		ctxBB2.arc(this.x, this.y, this.r, 0, 2*Math.PI);
+		ctxBB2.fillStyle = "black";
+		ctxBB2.fill();
+	},
+	moveF () {
+		this.x += this.speed;
+	},
+	moveB () {
+		this.x -= this.speed;
+	},
+	animateF () { 
+		batBData2.erase();
+		battleBar2.draw();
+		hitBox2.draw();
+		this.moveF();
+		this.draw();
+	},
+	animateB () {
+		batBData2.erase();
+		battleBar2.draw();
+		hitBox2.draw();
+		this.moveB();
+		this.draw();		
+	},
+	checkHit () {
+		const leftLim = hitBox2.x; 
+		const rightLim = hitBox2.x + hitBox2.width;
 		
-// 		if (batBData1.dotF) {
-// 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
-// 				console.log("PERFECT HIT!");
-// 			} else if (this.x >= leftLim && this.x <= rightLim) {
-// 				console.log("HIT!");
-// 			}
-// 		}
-// 		if (!batBData1.dotF) {
-// 			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
-// 				console.log("PERFECT HIT!");
-// 			} else if (this.x >= leftLim && this.x <= rightLim) {
-// 				console.log("HIT!");
-// 			}
-// 		}
-// 	}
-// }
+		if (batBData2.dotF) {
+			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
+				console.log("PERFECT HIT!");
+			} else if (this.x >= leftLim && this.x <= rightLim) {
+				console.log("HIT!");
+			}
+		}
+		if (!batBData2.dotF) {
+			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
+				console.log("PERFECT HIT!");
+			} else if (this.x >= leftLim && this.x <= rightLim) {
+				console.log("HIT!");
+			}
+		}
+	}
+}
 
 
 
-// // Animation functions -- start
+// Animation functions -- start
 
-// function animateDot1 () {
+function animateDot2 () {
 
-// 	batBData1.aniX += attackDot1.speed;
+	batBData2.aniX += attackDot2.speed;
 	
-// 	if (batBData1.aniX >= (canvasBB1.width - attackDot1.r*2)) {
+	if (batBData2.aniX >= (canvasBB2.width - attackDot2.r*2)) {
 		
-// 		batBData1.aniX = 0;
+		batBData2.aniX = 0;
 
-// 		if (batBData1.dotF) {
-// 			batBData1.dotF = false;
-// 		} else {
-// 			batBData1.dotF = true;
-// 		}
-// 	}
+		if (batBData2.dotF) {
+			batBData2.dotF = false;
+		} else {
+			batBData2.dotF = true;
+		}
+	}
 
-// 	if (batBData1.dotF) {
-// 		attackDot1.animateF();
-// 	}
+	if (batBData2.dotF) {
+		attackDot2.animateF();
+	}
 
-// 	if (!batBData1.dotF) {
-// 		attackDot1.animateB();
-// 	}
+	if (!batBData2.dotF) {
+		attackDot2.animateB();
+	}
 	
-// 	batBData1.aniHandle = window.requestAnimationFrame(animateDot1);
-// }
+	batBData2.aniHandle = window.requestAnimationFrame(animateDot2);
+}
 
-// // Animation functions -- stop
+// Animation functions -- stop
 
-// function stopDot1 () {
-// 	cancelAnimationFrame(batBData1.aniHandle);
-// }
+function stopDot2 () {
+	cancelAnimationFrame(batBData2.aniHandle);
+}

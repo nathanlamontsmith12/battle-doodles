@@ -17,13 +17,7 @@ const batBData1 = {
 		ctxBB1.clearRect(0, 0, this.canW, this.canH);
 	},
 	setSpeed () {
-		const newSpeed = input.value;
-		const validInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-		if (validInputs.includes(newSpeed)) {
-			attackDot1.speed = parseInt(newSpeed);
-		} else {
-			alert("Please enter valid speed!");
-		}
+		
 	},
 	activate () {
 		this.active = true;
@@ -48,6 +42,7 @@ const batBData1 = {
 
 				if (!batBData1.dotMoving) {
 					batBData1.dotMoving = true;
+					this.setSpeed();
 					animateDot1();
 				}
 			}
