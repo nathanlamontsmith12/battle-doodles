@@ -13,17 +13,26 @@ const batBData2 = {
 	dotF: true,
 	aniHandle: null,
 	aniX: 0,
+	minSpeed: 3,
+	maxSpeed: 7,
 	erase () {
 		ctxBB2.clearRect(0, 0, this.canW, this.canH);
 	},
 	setSpeed () {
-		// NEED TO WRITE NEW CODE HERE [identical to BB1]
+		attackDot2.speed = this.minSpeed + Math.floor(Math.random()*(this.maxSpeed - this.minSpeed + 1));
+		console.log(attackDot2.speed);
 	},
 	activate () {
 		this.active = true;
+		this.aniX = 0;
+		attackDot2.x = batBData2.dotR;
+		this.setSpeed();
 		battleBar2.draw();
 		hitBox2.draw();
 		attackDot2.draw();
+		this.dotMoving = true;
+		this.dotF = true;
+		animateDot2();
 	},
 	keypress (evt) {
 		if (batBData2.active) {
@@ -31,18 +40,12 @@ const batBData2 = {
 
 				if (evt.key === "j") {
 					if (batBData2.dotMoving) {
-						batBData2.dotMoving = false; // --> comment out to keep dot moving
-						stopDot2(); // --> comment out to keep dot moving 
+						batBData2.dotMoving = false; 
+						stopDot2(); 
 						attackDot2.checkHit();
+						this.attackDelay()
+						this.activate();
 					}
-				}
-			}
-
-			if (evt.key === "Enter") {
-
-				if (!batBData2.dotMoving) {
-					batBData2.dotMoving = true;
-					animateDot2();
 				}
 			}
 
@@ -53,6 +56,9 @@ const batBData2 = {
 				}
 			}
 		}
+	},
+	attackDelay () {
+
 	}
 }
 
@@ -121,16 +127,16 @@ const attackDot2 = {
 		
 		if (batBData2.dotF) {
 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
-				console.log("PERFECT HIT!");
+				console.log("P2: PERFECT HIT!");
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("HIT!");
+				console.log("P2: HIT!");
 			}
 		}
 		if (!batBData2.dotF) {
 			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
-				console.log("PERFECT HIT!");
+				console.log("P2: PERFECT HIT!");
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("HIT!");
+				console.log("P2: HIT!");
 			}
 		}
 	}

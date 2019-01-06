@@ -5,9 +5,6 @@ batBData1.activate();
 batBData2.activate();
 
 
-
-
-
 document.addEventListener("keypress", (evt) => {
 
 // Battle bar 1: 
