@@ -2,23 +2,14 @@ body {
 	background-color: cadetblue;
 }
 
-input {
-	margin-right: 20px;
-}
-
-#input-container {
+#battle-bar-container-1 {
 	margin-top: 40px;
 	display: flex;
+	align-items: center;
 	justify-content: center;
 }
 
-#rules {
-	background-color: white;
-	text-align: center;
-	margin-top: 40px;
-}
-
-#battle-bar-container {
+#battle-bar-container-2 {
 	margin-top: 40px;
 	display: flex;
 	align-items: center;
