@@ -1,8 +1,57 @@
 console.log("DOODLE BATTLE");
 
+const doodleArray = [];
+
+// Class
+
+class Doodle {
+	constructor (player, doodle) {
+		this.player = player;
+		this.draw = doodle.draw;
+		this.setAttr = doodle.setAttr;
+	}
+	make () {
+		this.draw();
+		this.setAttr();
+	}
+}
+
+
+
+// Game data 
+
+const game = {
+	init2 () {
+		this.refillDoodleArray();
+		batBData1.activate();
+		batBData2.activate();
+		player1.clearBlock();
+		player2.clearBlock();
+		player1.getDoodle();
+		player2.getDoodle();
+		player1.displayHealth();
+		player2.displayHealth();
+	},
+	refillDoodleArray () {
+		const filler = doodleLibrary.slice();
+		filler.forEach((elem) => {
+			doodleArray.push(elem);
+		})
+	}
+}
+
+// Player data 
+
 const player1 = {
-	health: 100,
+	lives: 3,
+	health: 0,
 	block: false,
+	doodle: null,
+	getDoodle () {
+		const randInd = Math.floor(Math.random()*doodleArray.length);
+		this.doodle = new Doodle ("1", doodleArray[randInd]);
+		this.doodle.make();
+	},
 	displayHealth () {
 		health1.textContent = this.health.toString();
 	},
@@ -51,8 +100,15 @@ const player1 = {
 }
 
 const player2 = {
-	health: 100,
+	lives: 3,
+	health: 0,
 	block: false,
+	doodle: null,
+	getDoodle () {
+		const randInd = Math.floor(Math.random()*doodleArray.length);
+		this.doodle = new Doodle ("2", doodleArray[randInd]);
+		this.doodle.make();
+	},
 	displayHealth () {
 		health2.textContent = this.health.toString();
 	},
@@ -100,13 +156,7 @@ const player2 = {
 	}
 }
 
-
-batBData1.activate();
-batBData2.activate();
-player1.clearBlock();
-player2.clearBlock();
-player1.displayHealth();
-player2.displayHealth();
+game.init2();
 
 document.addEventListener("keypress", (evt) => {
 
