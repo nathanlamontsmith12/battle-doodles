@@ -13,8 +13,8 @@ const batBData1 = {
 	delay: 0,
 	minDelayHit: 2,
 	maxDelayHit: 4,
-	minDelayMiss: 4,
-	maxDelayMiss: 7,
+	minDelayMiss: 2,
+	maxDelayMiss: 6,
 	lastAttackHit: true,
 	active: false,
 	canW: canvasBB1.width,
@@ -147,11 +147,11 @@ const attackDot1 = {
 				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
 				batBData1.pHit = true;
-				batBData1.damage = this.speed * 2;
+				batBData1.damage = (player1.doodle.strength + (this.speed * 2)) * 2;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
-				batBData1.damage = this.speed * 2;
+				batBData1.damage = (player1.doodle.strength + (this.speed * 2));
 			}
 		}
 		if (!batBData1.dotF) {
@@ -159,11 +159,11 @@ const attackDot1 = {
 				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
 				batBData1.pHit = true;
-				batBData1.damage = this.speed * 2;
+				batBData1.damage = (player1.doodle.strength + (this.speed * 2)) * 2;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
-				batBData1.damage = this.speed * 2;
+				batBData1.damage = (player1.doodle.strength + (this.speed * 2));
 			}
 		}
 

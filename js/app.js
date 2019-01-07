@@ -41,6 +41,10 @@ class Doodle {
 		this.name = doodle.name;
 		this.health = doodle.health;
 		this.src = doodle.src;
+		this.strength = doodle.strength;
+		this.setSpecial = doodle.setSpecial;
+		this.clearSpecial = doodle.clearSpecial;
+		this.blockMod = 2;
 	}
 	draw () {
 		const image = document.createElement("IMG");
@@ -97,6 +101,7 @@ const player1 = {
 		const randInd1 = Math.floor(Math.random()*doodleArray.length);
 		this.doodle = new Doodle ("1", doodleArray[randInd1]);
 		doodleArray.splice(randInd1, 1);
+		this.doodle.setSpecial();
 		this.displayHealth();
 	},
 	displayHealth () {
@@ -121,6 +126,7 @@ const player1 = {
 		document.getElementById("player-1-lives").textContent = this.lives.toString();
 	},
 	doodleKO () {
+		this.doodle.clearSpecial();
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
@@ -128,11 +134,7 @@ const player1 = {
 	attack () {
 		
 		this.attacking = true;
-		console.log("Player 1 attacking " + player1.attacking);
 
-		if (batBData1.pHit) {
-			return;
-		} // *** BLOCKING MODE 
 		if (!batBData1.lastAttackHit) {
 			return;
 		}
@@ -161,7 +163,7 @@ const player1 = {
 		}
 		if (this.block && !this.attacking) {
 			if (evt.key === "d") {
-				batBData2.damage = Math.floor(batBData2.damage / 2); // *** BLOCKING MODE 
+				batBData2.damage = Math.floor(batBData2.damage / this.doodle.blockMod); 
 			}
 		}
 	}
@@ -175,6 +177,7 @@ const player2 = {
 	getDoodle () {
 		const randInd2 = Math.floor(Math.random()*doodleArray.length);
 		this.doodle = new Doodle ("2", doodleArray[randInd2]);
+		this.doodle.setSpecial();
 		doodleArray.splice(randInd2, 1);
 		this.displayHealth();
 	},
@@ -200,6 +203,7 @@ const player2 = {
 		document.getElementById("player-2-lives").textContent = this.lives.toString();
 	},
 	doodleKO () {
+		this.doodle.clearSpecial();
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
@@ -207,11 +211,7 @@ const player2 = {
 	attack () {
 
 		this.attacking = true;
-		console.log("Player 2 attacking " + player2.attacking);
 
-		if (batBData2.pHit) {
-			return;
-		}  // *** BLOCKING MODE 
 		if (!batBData2.lastAttackHit) {
 			return;
 		}
@@ -240,7 +240,7 @@ const player2 = {
 		}
 		if (this.block && !this.attacking) {
 			if (evt.key === "l") {
-				batBData1.damage = Math.floor(batBData1.damage / 2); // *** BLOCKING MODE 
+				batBData1.damage = Math.floor(batBData1.damage / this.doodle.blockMod);  
 			}
 		}
 	}
