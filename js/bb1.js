@@ -140,6 +140,7 @@ const attackDot1 = {
 		const rightLim = hitBox1.x + hitBox1.width;
 		
 		batBData1.lastAttackHit = false;
+		batBData1.pHit = false;
 
 		if (batBData1.dotF) {
 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
