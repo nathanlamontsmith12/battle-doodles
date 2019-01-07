@@ -47,6 +47,7 @@ class Doodle {
 		this.setSpecial = doodle.setSpecial;
 		this.clearSpecial = doodle.clearSpecial;
 		this.blockHurt = doodle.blockHurt;
+		this.attackAnimation = doodle.attackAnimation; 
 		this.blockMod = 2;
 	}
 	draw () {
@@ -58,6 +59,9 @@ class Doodle {
 	erase () {
 		const imageToErase = document.querySelector(`#doodle-${this.player} img`);
 		document.getElementById("doodle-" + this.player).removeChild(imageToErase);
+	}
+	hitAnimation () {
+		// when damage is dealt 
 	}
 }
 
