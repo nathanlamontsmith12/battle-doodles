@@ -2,10 +2,26 @@ body {
 	background-color: cadetblue;
 }
 
+#menu {
+	width: 500px;
+	padding: 40px;
+	border: black solid 5px;
+	display: flex;
+	justify-content: space-between;
+	background-color: white;
+	flex-wrap: wrap;
+}
+
+.menuItem img {
+	margin: 20px;
+	height: 60px;
+	width: 60px;
+}
+
 #arena {
 	margin: 5px;
-	display: flex;
 	height: 95vh;
+	display: none; 
 	min-height: 500px;
 	min-width: 750px;
 	justify-content: space-between;

@@ -13,7 +13,10 @@ console.log("DOODLE BATTLE");
 // CHANGE OF PLAN: The much more elegant solution -- blockHurt! 
 
 // --------------
-// CURRENT TASK: Differentiation + special abilities!!  
+// CURRENT TASKS: 
+//	Selectable;
+//	DRY;
+// 	Differentiation + special abilities!!  
 // --------------
 
 // TO DO: 
@@ -24,6 +27,9 @@ console.log("DOODLE BATTLE");
 // 10.) At least ten selectable doodles!! 
 // 11.) Playtest and balance the doodles 
 // 12.) basic animations 
+
+// ------------------------
+
 // 13.) basic sound effects 
 // 14.) music 
 // 15.) complex animations (special attacks?)
@@ -53,7 +59,7 @@ class Doodle {
 	draw () {
 		const image = document.createElement("IMG");
 		image.src = this.src;
-		const location = document.getElementById("doodle-" + this.player);
+		const location = document.getElementById("doodle-" + this.player.toString());
 		location.appendChild(image);
 	}
 	erase () {
@@ -61,18 +67,44 @@ class Doodle {
 		document.getElementById("doodle-" + this.player).removeChild(imageToErase);
 	}
 	hitAnimation () {
-		// when damage is dealt 
+		// when doodle takes damage, jiggle-shock the display based on the amount of damage taken 
 	}
 }
-
 
 
 // Game data 
 
 const game = {
+	playerSelection: 1,
+	totLives: 2,
+	totPlayers: 0,
 	blockAniHandle: null,
-	init2 () {
+	selections: [],
+	loadMenu () {
+		doodleArray.forEach( (elem, index) => {
+			const menuItem = document.createElement("DIV"); 
+			menuItem.className = "menuItem";
+			menuItem.id = `${elem.id}-menu-display`;
+			const doodleIMG = document.createElement("IMG");
+			doodleIMG.src = elem.src;
+			doodleIMG.id = index.toString();
+			document.getElementById("menu").appendChild(menuItem);
+			menuItem.appendChild(doodleIMG);
+		})
+	},
+	showArena () {
+		document.getElementById("arena").style.display = "flex";
+	},
+	hideArena () {
+		document.getElementById("arena").style.display = "none";
+	},
+	init0 () {
 		this.refillDoodleArray();
+		this.loadMenu();
+	},
+	init2 () {
+		document.getElementById("menu").style.display = "none";
+		this.showArena();
 		batBData1.activate();
 		batBData2.activate();
 		this.setDoodles();
@@ -103,15 +135,17 @@ const game = {
 
 // PLAYER   1
 
+
+
 const player1 = {
 	lives: 2,
 	attacking: false,
 	block: false,
 	doodle: null,
+	startingDoodles: [],
 	getDoodle () {
-		const randInd1 = Math.floor(Math.random()*doodleArray.length);
-		this.doodle = new Doodle ("1", doodleArray[randInd1]);
-		doodleArray.splice(randInd1, 1);
+		this.doodle = new Doodle ("1", doodleLibrary[this.startingDoodles[0]]);
+		this.startingDoodles.shift();
 		this.doodle.setSpecial();
 		this.displayHealth();
 	},
@@ -196,11 +230,11 @@ const player2 = {
 	attacking: false,
 	block: false,
 	doodle: null,
+	startingDoodles: [],
 	getDoodle () {
-		const randInd2 = Math.floor(Math.random()*doodleArray.length);
-		this.doodle = new Doodle ("2", doodleArray[randInd2]);
+		this.doodle = new Doodle ("2", doodleLibrary[this.startingDoodles[0]]);
+		this.startingDoodles.shift();
 		this.doodle.setSpecial();
-		doodleArray.splice(randInd2, 1);
 		this.displayHealth();
 	},
 	displayHealth () {
@@ -278,6 +312,41 @@ const player2 = {
 
 // EVENT LISTENERS 
 
+document.getElementById("menu").addEventListener("click", (evt) => {
+
+	if (game.selections.length >= (game.totLives)*2) {
+		return;
+	}
+
+	evt.target.style.opacity = 0.3;
+
+	const tracker = evt.target.id;
+
+	if (game.selections.includes(tracker)) {
+		return;
+	}
+
+	if (game.playerSelection === 1) {
+		player1.startingDoodles.push(tracker);
+	}
+
+	if (game.playerSelection === 2) {
+		player2.startingDoodles.push(tracker);
+	}
+
+	if (game.playerSelection === 1) {
+		game.playerSelection = 2;
+	} else {
+		game.playerSelection = 1;
+	}
+
+	game.selections.push(tracker);
+
+	if (game.selections.length >= (game.totLives*2)) {
+		game.init2();
+	}
+})
+
 document.addEventListener("keypress", (evt) => {
 
 // Battle bar 1: 
@@ -290,6 +359,8 @@ document.addEventListener("keypress", (evt) => {
 
 
 // FUNCTIONS 
+
+game.init0();
 
 function animateBlock () {
 
@@ -307,5 +378,3 @@ function animateBlock () {
 
 	game.blockAniHandle = window.requestAnimationFrame(animateBlock);
 }
-
-game.init2();

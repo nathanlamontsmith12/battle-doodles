@@ -1,10 +1,19 @@
-console.log("Battle Bar 1 Linked");
 
+// CACHED ELEMENTS - PLAYER 1
 const canvasBB1 = document.getElementById("battle-bar-1");
 const ctxBB1 = canvasBB1.getContext("2d");
 const message1 = document.getElementById("message-1");
 const health1 = document.getElementById("health-1");
 const block1 = document.getElementById("block-1");
+
+
+// CACHED ELEMENTS - PLAYER 2
+const canvasBB2 = document.getElementById("battle-bar-2");
+const ctxBB2 = canvasBB2.getContext("2d");
+const message2 = document.getElementById("message-2");
+const health2 = document.getElementById("health-2");
+const block2 = document.getElementById("block-2");
+
 
 const batBData1 = {
 	damage: 0,
