@@ -49,7 +49,7 @@ const batBData1 = {
 	attackDelay () {
 
 		this.active = false;
-				
+
 		if (!this.lastAttackHit) {
 			this.delay = this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
 		} else {

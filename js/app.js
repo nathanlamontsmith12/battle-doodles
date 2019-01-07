@@ -4,15 +4,15 @@ console.log("DOODLE BATTLE");
 // 1.) display and update player's lives;
 // 2.) add game logic to check health / deduct lives / get new doodle 
 // 3.) add game logic for game over / rematch 
-// 4.) Make block functionality modular -- and shorten the "block window" *** 
+// 4.) Make block functionality modular -- and shorten the "block window" ? *** 
 // 5.) Can't block while attacking (and block reduces damage TO half, rounded down?)
 
 // CHANGE OF PLAN: block reduces damage to half, and cannot block while attacking -- 
-// this makes the block window more dynamic and nerfs blocking enough. 
-
+// this makes the block window more dynamic and nerfs blocking enough. ---> DONE! 
 
 // --------------
-
+// CURRENT TASK: special abilities!! 
+// --------------
 
 // TO DO: 
 // 6.) Special abilities -- strength + weakness for each 
@@ -59,16 +59,16 @@ class Doodle {
 // Game data 
 
 const game = {
+	blockAniHandle: null,
 	init2 () {
 		this.refillDoodleArray();
 		batBData1.activate();
 		batBData2.activate();
-		player1.clearBlock();
-		player2.clearBlock();
 		this.setDoodles();
 		this.drawDoodles();
 		player1.displayLives();
 		player2.displayLives();
+		animateBlock();
 	},
 	refillDoodleArray () {
 		const filler = doodleLibrary.slice();
@@ -83,13 +83,14 @@ const game = {
 	drawDoodles() {
 		player1.doodle.draw();
 		player2.doodle.draw();
-	}
+	},
 }
 
 // Player data 
 
 const player1 = {
 	lives: 2,
+	attacking: false,
 	block: false,
 	doodle: null,
 	getDoodle () {
@@ -119,31 +120,26 @@ const player1 = {
 	displayLives() {
 		document.getElementById("player-1-lives").textContent = this.lives.toString();
 	},
-	displayBlock () {
-		block1.style.visibility = "visible";
-	},
 	doodleKO () {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
 	},
-	clearBlock () {
-		block1.style.visibility = "hidden";
-	},
 	attack () {
-		// if (batBData1.pHit) {
-		// 	return;
-		// } *** BLOCKING MODE 
+		
+		this.attacking = true;
+		console.log("Player 1 attacking " + player1.attacking);
+
+		if (batBData1.pHit) {
+			return;
+		} // *** BLOCKING MODE 
 		if (!batBData1.lastAttackHit) {
 			return;
 		}
-		player1.block = false;
-		player1.clearBlock();
 		player2.block = true;
-		player2.displayBlock();
 	},
 	dealDamage () {
-		player2.clearBlock();
+		this.attacking = false;
 		player2.block = false;
 		player2.doodle.health = player2.doodle.health -= batBData1.damage;
 		player2.displayHealth();
@@ -163,10 +159,9 @@ const player1 = {
 				}
 			}
 		}
-		if (this.block) {
+		if (this.block && !this.attacking) {
 			if (evt.key === "d") {
-				batBData2.damage = 0;
-				// Math.floor(batBData2.damage / 2);  // *** BLOCKING MODE
+				batBData2.damage = Math.floor(batBData2.damage / 2); // *** BLOCKING MODE 
 			}
 		}
 	}
@@ -174,6 +169,7 @@ const player1 = {
 
 const player2 = {
 	lives: 2,
+	attacking: false,
 	block: false,
 	doodle: null,
 	getDoodle () {
@@ -203,31 +199,26 @@ const player2 = {
 	displayLives () {
 		document.getElementById("player-2-lives").textContent = this.lives.toString();
 	},
-	displayBlock () {
-		block2.style.visibility = "visible";
-	},
 	doodleKO () {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
 	},
-	clearBlock () {
-		block2.style.visibility = "hidden";
-	},
 	attack () {
-		// if (batBData2.pHit) {
-		// 	return;
-		// }  *** BLOCKING MODE 
+
+		this.attacking = true;
+		console.log("Player 2 attacking " + player2.attacking);
+
+		if (batBData2.pHit) {
+			return;
+		}  // *** BLOCKING MODE 
 		if (!batBData2.lastAttackHit) {
 			return;
 		}
-		player2.block = false;
-		player2.clearBlock();
 		player1.block = true;
-		player1.displayBlock();
 	},
 	dealDamage () {
-		player1.clearBlock();
+		this.attacking = false;
 		player1.block = false;
 		player1.doodle.health = player1.doodle.health -= batBData2.damage;
 		player1.displayHealth();
@@ -247,17 +238,15 @@ const player2 = {
 				}
 			}
 		}
-		if (this.block) {
+		if (this.block && !this.attacking) {
 			if (evt.key === "l") {
-				batBData1.damage = 0;
-				// Math.floor(batBData1.damage / 2); // *** BLOCKING MODE 
+				batBData1.damage = Math.floor(batBData1.damage / 2); // *** BLOCKING MODE 
 			}
 		}
 	}
 }
 
 // CACHED ELEMENTS 
-
 
 
 // EVENT LISTENERS 
@@ -272,5 +261,24 @@ document.addEventListener("keypress", (evt) => {
 
 })
 
+
+// FUNCTIONS 
+
+function animateBlock () {
+
+	if (player1.block && !player1.attacking) {
+		block1.style.visibility = "visible";
+	} else {
+		block1.style.visibility = "hidden";
+	}
+
+	if (player2.block && !player2.attacking) {
+		block2.style.visibility = "visible";
+	} else {
+		block2.style.visibility = "hidden";
+	}
+
+	game.blockAniHandle = window.requestAnimationFrame(animateBlock);
+}
 
 game.init2();
