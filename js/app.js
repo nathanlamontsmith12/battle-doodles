@@ -10,8 +10,10 @@ console.log("DOODLE BATTLE");
 // CHANGE OF PLAN: block reduces damage to half, and cannot block while attacking -- 
 // this makes the block window more dynamic and nerfs blocking enough. ---> DONE! 
 
+// CHANGE OF PLAN: The much more elegant solution -- blockHurt! 
+
 // --------------
-// CURRENT TASK: special abilities!! 
+// CURRENT TASK: Differentiation + special abilities!!  
 // --------------
 
 // TO DO: 
@@ -44,6 +46,7 @@ class Doodle {
 		this.strength = doodle.strength;
 		this.setSpecial = doodle.setSpecial;
 		this.clearSpecial = doodle.clearSpecial;
+		this.blockHurt = doodle.blockHurt;
 		this.blockMod = 2;
 	}
 	draw () {
@@ -134,7 +137,6 @@ const player1 = {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
-		batBData1.activate();
 	},
 	attack () {
 
@@ -156,7 +158,6 @@ const player1 = {
 		if (batBData1.active) {
 			if (batBData1.dotMoving && !this.attacking) {
 				if (evt.key === "a") {
-					console.log("Player 1 Attacks!");
 					this.attacking = true;
 					batBData1.dotMoving = false; 
 					stopDot1(); 
@@ -172,9 +173,10 @@ const player1 = {
 				this.block = false;
 				return;
 			}
-			if (!this.block || this.attacking) {
-				batBData1.applyDelay();
-			}
+			this.doodle.health -= this.doodle.blockHurt;
+			this.displayHealth();
+			this.checkHealth();
+			this.checkLives();
 		}
 	}
 }
@@ -223,7 +225,6 @@ const player2 = {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
-		this.batBData2.activate();
 	},
 	attack () {
 
@@ -245,7 +246,6 @@ const player2 = {
 		if (batBData2.active) {
 			if (batBData2.dotMoving && !this.attacking) {
 				if (evt.key === "j") {
-					console.log("Player 2 Attacks!");
 					this.attacking = true;
 					batBData2.dotMoving = false;
 					stopDot2(); 
@@ -260,10 +260,11 @@ const player2 = {
 				batBData1.damage = Math.floor(batBData1.damage / this.doodle.blockMod); 
 				this.block = false;
 				return;
-			}
-			if (!this.block || this.attacking) {
-				batBData2.applyDelay();
-			}
+			};
+			this.doodle.health -= this.doodle.blockHurt;
+			this.displayHealth();
+			this.checkHealth();
+			this.checkLives();
 		}
 	}
 }

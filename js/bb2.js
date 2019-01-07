@@ -49,35 +49,6 @@ const batBData2 = {
 		this.dotF = true;
 		animateDot2();
 	},
-	applyDelay () {
-		console.log("delay penalty player 2")
-
-		if (this.delay > 0) {
-			this.delay = this.delay += this.delayPenalty;
-			if (this.delay > this.maxDelay) {
-				this.delay = this.maxDelay;
-			}
-		} else {
-			
-			this.active = false;
-			this.dotMoving = false;
-			stopDot2();
-
-			this.delay = this.delay + this.delayPenalty;
-			if (this.delay > this.maxDelay) {
-				this.delay = this.maxDelay;
-			}
-			this.delayHandle = setInterval(()=>{
-				if (this.delay > 0) {
-					this.delay--;
-					attackDot1.eraseDot();
-				} else {
-					clearInterval(this.delayHandle);
-					this.activate();
-				};
-			}, 500)
-		}
-	},
 	attackDelay () {
 
 		this.active = false;
