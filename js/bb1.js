@@ -11,6 +11,8 @@ const batBData1 = {
 	pHit: false,
 	delayHandle: null,
 	delay: 0,
+	maxDelay: 10,
+	delayPenalty: 2,
 	minDelayHit: 2,
 	maxDelayHit: 4,
 	minDelayMiss: 2,
@@ -34,6 +36,7 @@ const batBData1 = {
 		attackDot1.speed = this.minSpeed + Math.floor(Math.random()*(this.maxSpeed - this.minSpeed + 1));
 	},
 	activate () {
+		this.erase();
 		this.delay = 0;
 		this.active = true;
 		this.aniX = 0;
@@ -46,14 +49,49 @@ const batBData1 = {
 		this.dotF = true;
 		animateDot1();
 	},
+	applyDelay () {
+		console.log("Delay penalty player 1")
+
+		if (player1.attacking) {
+			this.delay = this.delay += this.delayPenalty;
+			if (this.delay > this.maxDelay) {
+				this.delay = this.maxDelay;
+			}
+		} else {
+			
+			this.active = false;
+			this.dotMoving = false;
+			stopDot1();
+
+			this.delay = this.delay + this.delayPenalty;
+
+			if (this.delay > this.maxDelay) {
+				this.delay = this.maxDelay;
+			}
+
+			this.delayHandle = setInterval(()=>{
+				if (this.delay > 0) {
+					this.delay--;
+					attackDot1.eraseDot();
+				} else {
+					clearInterval(this.delayHandle);
+					this.activate();
+				};
+			}, 500)
+		}
+	},
 	attackDelay () {
 
 		this.active = false;
 
 		if (!this.lastAttackHit) {
-			this.delay = this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
+			this.delay = this.delay + this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
 		} else {
-			this.delay = this.minDelayHit + Math.floor(Math.random()*(this.maxDelayHit - this.minDelayHit));
+			this.delay = this.delay + this.minDelayHit + Math.floor(Math.random()*(this.maxDelayHit - this.minDelayHit));
+		}
+
+		if (this.delay > this.maxDelay) {
+			this.delay = this.maxDelay;
 		}
 
 		this.delayHandle = setInterval(()=>{
@@ -179,32 +217,26 @@ const attackDot1 = {
 // Animation functions -- start
 
 function animateDot1 () {
-	if (batBData1.delay <= 0) {
 
- 		batBData1.delay = 0;
-
- 		clearInterval(batBData1.delayHandle);
-
-		batBData1.aniX += attackDot1.speed;
+	batBData1.aniX += attackDot1.speed;
+	
+	if (batBData1.aniX >= (canvasBB1.width - attackDot1.r*2)) {
 		
-		if (batBData1.aniX >= (canvasBB1.width - attackDot1.r*2)) {
-			
-			batBData1.aniX = 0;
-
-			if (batBData1.dotF) {
-				batBData1.dotF = false;
-			} else {
-				batBData1.dotF = true;
-			}
-		}
+		batBData1.aniX = 0;
 
 		if (batBData1.dotF) {
-			attackDot1.animateF();
+			batBData1.dotF = false;
+		} else {
+			batBData1.dotF = true;
 		}
+	}
 
-		if (!batBData1.dotF) {
-			attackDot1.animateB();
-		}
+	if (batBData1.dotF) {
+		attackDot1.animateF();
+	}
+
+	if (!batBData1.dotF) {
+		attackDot1.animateB();
 	}
 
 	batBData1.aniHandle = window.requestAnimationFrame(animateDot1);

@@ -11,6 +11,8 @@ const batBData2 = {
 	pHit: false,
 	delayHandle: null,
 	delay: 0,
+	maxDelay: 10,
+	delayPenalty: 2,
 	minDelayHit: 2,
 	maxDelayHit: 4,
 	minDelayMiss: 2,
@@ -34,6 +36,7 @@ const batBData2 = {
 		attackDot2.speed = this.minSpeed + Math.floor(Math.random()*(this.maxSpeed - this.minSpeed + 2));
 	},
 	activate () {
+		this.erase();
 		this.delay = 0;
 		this.active = true;
 		this.aniX = 0;
@@ -46,14 +49,47 @@ const batBData2 = {
 		this.dotF = true;
 		animateDot2();
 	},
+	applyDelay () {
+		console.log("delay penalty player 2")
+
+		if (player2.attacking) {
+			this.delay = this.delay += this.delayPenalty;
+			if (this.delay > this.maxDelay) {
+				this.delay = this.maxDelay;
+			}
+		} else {
+			
+			this.active = false;
+			this.dotMoving = false;
+			stopDot2();
+
+			this.delay = this.delay + this.delayPenalty;
+			if (this.delay > this.maxDelay) {
+				this.delay = this.maxDelay;
+			}
+			this.delayHandle = setInterval(()=>{
+				if (this.delay > 0) {
+					this.delay--;
+					attackDot1.eraseDot();
+				} else {
+					clearInterval(this.delayHandle);
+					this.activate();
+				};
+			}, 500)
+		}
+	},
 	attackDelay () {
 
 		this.active = false;
 				
 		if (!this.lastAttackHit) {
-			this.delay = this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
+			this.delay = this.delay + this.minDelayMiss + Math.floor(Math.random()*(this.maxDelayMiss - this.minDelayMiss));
 		} else {
-			this.delay = this.minDelayHit + Math.floor(Math.random()*(this.maxDelayHit - this.minDelayHit));
+			this.delay = this.delay + this.minDelayHit + Math.floor(Math.random()*(this.maxDelayHit - this.minDelayHit));
+		}
+
+		if (this.delay > this.maxDelay) {
+			this.delay = this.maxDelay;
 		}
 
 		this.delayHandle = setInterval(()=>{
@@ -62,7 +98,6 @@ const batBData2 = {
 				attackDot2.eraseDot();
 			} else {
 				clearInterval(this.delayHandle);
-				this.delay = 0;
 				player2.dealDamage();
 				this.activate();
 			};
@@ -179,32 +214,26 @@ const attackDot2 = {
 // Animation functions -- start
 
 function animateDot2 () {
-	if (batBData2.delay <= 0) {
 
- 		batBData2.delay = 0;
-
- 		clearInterval(batBData2.delayHandle);
-
-		batBData2.aniX += attackDot2.speed;
+	batBData2.aniX += attackDot2.speed;
 		
-		if (batBData2.aniX >= (canvasBB2.width - attackDot2.r*2)) {
-			
-			batBData2.aniX = 0;
-
-			if (batBData2.dotF) {
-				batBData2.dotF = false;
-			} else {
-				batBData2.dotF = true;
-			}
-		}
+	if (batBData2.aniX >= (canvasBB2.width - attackDot2.r*2)) {
+		
+		batBData2.aniX = 0;
 
 		if (batBData2.dotF) {
-			attackDot2.animateF();
+			batBData2.dotF = false;
+		} else {
+			batBData2.dotF = true;
 		}
+	}
 
-		if (!batBData2.dotF) {
-			attackDot2.animateB();
-		}
+	if (batBData2.dotF) {
+		attackDot2.animateF();
+	}
+
+	if (!batBData2.dotF) {
+		attackDot2.animateB();
 	}
 
 	batBData2.aniHandle = window.requestAnimationFrame(animateDot2);

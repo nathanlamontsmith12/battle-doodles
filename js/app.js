@@ -90,7 +90,11 @@ const game = {
 	},
 }
 
+
 // Player data 
+
+
+// PLAYER   1
 
 const player1 = {
 	lives: 2,
@@ -130,6 +134,7 @@ const player1 = {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
+		batBData1.activate();
 	},
 	attack () {
 		
@@ -161,13 +166,24 @@ const player1 = {
 				}
 			}
 		}
-		if (this.block && !this.attacking) {
-			if (evt.key === "d") {
+		if (evt.key === "d") {
+			if (this.block && !this.attacking) {
 				batBData2.damage = Math.floor(batBData2.damage / this.doodle.blockMod); 
+				this.block = false;
+				return;
+			}
+			if (!this.block || this.attacking) {
+				batBData1.applyDelay();
 			}
 		}
 	}
 }
+
+
+
+// PLAYER   2
+
+
 
 const player2 = {
 	lives: 2,
@@ -207,6 +223,7 @@ const player2 = {
 		this.doodle.erase();
 		this.getDoodle();
 		this.doodle.draw();
+		this.batBData2.activate();
 	},
 	attack () {
 
@@ -238,9 +255,14 @@ const player2 = {
 				}
 			}
 		}
-		if (this.block && !this.attacking) {
-			if (evt.key === "l") {
-				batBData1.damage = Math.floor(batBData1.damage / this.doodle.blockMod);  
+		if (evt.key === "l") {
+			if (this.block && !this.attacking) {
+				batBData1.damage = Math.floor(batBData1.damage / this.doodle.blockMod); 
+				this.block = false;
+				return;
+			}
+			if (!this.block || this.attacking) {
+				batBData2.applyDelay();
 			}
 		}
 	}
