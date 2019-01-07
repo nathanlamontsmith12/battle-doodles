@@ -137,8 +137,6 @@ const player1 = {
 		batBData1.activate();
 	},
 	attack () {
-		
-		this.attacking = true;
 
 		if (!batBData1.lastAttackHit) {
 			return;
@@ -156,8 +154,10 @@ const player1 = {
 	keypress (evt) {
 
 		if (batBData1.active) {
-			if (batBData1.dotMoving) {
+			if (batBData1.dotMoving && !this.attacking) {
 				if (evt.key === "a") {
+					console.log("Player 1 Attacks!");
+					this.attacking = true;
 					batBData1.dotMoving = false; 
 					stopDot1(); 
 					attackDot1.checkHit();
@@ -227,8 +227,6 @@ const player2 = {
 	},
 	attack () {
 
-		this.attacking = true;
-
 		if (!batBData2.lastAttackHit) {
 			return;
 		}
@@ -245,9 +243,11 @@ const player2 = {
 	keypress (evt) {
 
 		if (batBData2.active) {
-			if (batBData2.dotMoving) {
+			if (batBData2.dotMoving && !this.attacking) {
 				if (evt.key === "j") {
-					batBData2.dotMoving = false; 
+					console.log("Player 2 Attacks!");
+					this.attacking = true;
+					batBData2.dotMoving = false;
 					stopDot2(); 
 					attackDot2.checkHit();
 					this.attack();

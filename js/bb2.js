@@ -52,7 +52,7 @@ const batBData2 = {
 	applyDelay () {
 		console.log("delay penalty player 2")
 
-		if (player2.attacking) {
+		if (this.delay > 0) {
 			this.delay = this.delay += this.delayPenalty;
 			if (this.delay > this.maxDelay) {
 				this.delay = this.maxDelay;
@@ -216,7 +216,7 @@ const attackDot2 = {
 function animateDot2 () {
 
 	batBData2.aniX += attackDot2.speed;
-		
+
 	if (batBData2.aniX >= (canvasBB2.width - attackDot2.r*2)) {
 		
 		batBData2.aniX = 0;

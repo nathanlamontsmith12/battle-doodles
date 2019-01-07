@@ -52,7 +52,7 @@ const batBData1 = {
 	applyDelay () {
 		console.log("Delay penalty player 1")
 
-		if (player1.attacking) {
+		if (this.delay > 0) {
 			this.delay = this.delay += this.delayPenalty;
 			if (this.delay > this.maxDelay) {
 				this.delay = this.maxDelay;
@@ -100,7 +100,6 @@ const batBData1 = {
 				attackDot1.eraseDot();
 			} else {
 				clearInterval(this.delayHandle);
-				this.delay = 0;
 				player1.dealDamage();
 				this.activate();
 			};
