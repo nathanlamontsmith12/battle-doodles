@@ -62,6 +62,9 @@ body {
 }
 
 .doodleDisplay {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	height: 200px;
 	width: 200px;
 	border: 2px solid black;
@@ -69,6 +72,4 @@ body {
 }
 
 .doodleDisplay img {
-	height: 200px;
-	width: 200px;
 }

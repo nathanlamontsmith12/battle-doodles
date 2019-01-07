@@ -147,11 +147,11 @@ const attackDot1 = {
 				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
 				batBData1.pHit = true;
-				batBData1.damage = this.speed;
+				batBData1.damage = this.speed * 2;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
-				batBData1.damage = this.speed;
+				batBData1.damage = this.speed * 2;
 			}
 		}
 		if (!batBData1.dotF) {
@@ -159,11 +159,11 @@ const attackDot1 = {
 				message1.textContent = "PERFECT HIT!";
 				batBData1.lastAttackHit = true;
 				batBData1.pHit = true;
-				batBData1.damage = this.speed;
+				batBData1.damage = this.speed * 2;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
 				message1.textContent = "HIT!";
 				batBData1.lastAttackHit = true;
-				batBData1.damage = this.speed;
+				batBData1.damage = this.speed * 2;
 			}
 		}
 

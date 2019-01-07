@@ -4,16 +4,21 @@ console.log("DOODLE BATTLE");
 // 1.) display and update player's lives;
 // 2.) add game logic to check health / deduct lives / get new doodle 
 // 3.) add game logic for game over / rematch 
+// 4.) Make block functionality modular -- and shorten the "block window" *** 
+// 5.) Can't block while attacking (and block reduces damage TO half, rounded down?)
+
+// CHANGE OF PLAN: block reduces damage to half, and cannot block while attacking -- 
+// this makes the block window more dynamic and nerfs blocking enough. 
+
 
 // --------------
 
+
 // TO DO: 
-// 4.) Make block functionality modular -- and shorten the "block window" 
-// 5.) Can't block while attacking (and block reduces damage TO half, rounded down?)
 // 6.) Special abilities -- strength + weakness for each 
-// 7.) UI -- make it good! 
-// 8.) Allow players to set advantage / disadvantage   
-// 9.) Players select 2 doodles (1 PL first, 2 PL x2, 1 PL last); no mirror matches (?)
+// 7.) Allow players to set advantage / disadvantage   
+// 8.) Players select 2 doodles (1 PL first, 2 PL x2, 1 PL last); no mirror matches (?)
+// 9.) UI -- make it good! 
 // 10.) At least ten selectable doodles!! 
 // 11.) Playtest and balance the doodles 
 // 12.) basic animations 
@@ -23,6 +28,8 @@ console.log("DOODLE BATTLE");
 // 16.) single-player mode  
 
 
+
+// ****** NOTE: "blocking mode" ********* 
 
 const doodleArray = [];
 
@@ -124,12 +131,14 @@ const player1 = {
 		block1.style.visibility = "hidden";
 	},
 	attack () {
-		if (batBData1.pHit) {
-			return;
-		}
+		// if (batBData1.pHit) {
+		// 	return;
+		// } *** BLOCKING MODE 
 		if (!batBData1.lastAttackHit) {
 			return;
 		}
+		player1.block = false;
+		player1.clearBlock();
 		player2.block = true;
 		player2.displayBlock();
 	},
@@ -157,6 +166,7 @@ const player1 = {
 		if (this.block) {
 			if (evt.key === "d") {
 				batBData2.damage = 0;
+				// Math.floor(batBData2.damage / 2);  // *** BLOCKING MODE
 			}
 		}
 	}
@@ -205,12 +215,14 @@ const player2 = {
 		block2.style.visibility = "hidden";
 	},
 	attack () {
-		if (batBData2.pHit) {
-			return;
-		}
+		// if (batBData2.pHit) {
+		// 	return;
+		// }  *** BLOCKING MODE 
 		if (!batBData2.lastAttackHit) {
 			return;
 		}
+		player2.block = false;
+		player2.clearBlock();
 		player1.block = true;
 		player1.displayBlock();
 	},
@@ -238,6 +250,7 @@ const player2 = {
 		if (this.block) {
 			if (evt.key === "l") {
 				batBData1.damage = 0;
+				// Math.floor(batBData1.damage / 2); // *** BLOCKING MODE 
 			}
 		}
 	}
