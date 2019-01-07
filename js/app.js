@@ -1,8 +1,17 @@
 console.log("DOODLE BATTLE");
 
+// TO DO: 
+
+// 1.) display player's lives;
+// 2.) add function to update display of player's lives;
+// 3.) add game logic to check health / deduct lives / get new doodle 
+// 4.) add game logic for game over / rematch  
+
+
+
 const doodleArray = [];
 
-// Class
+// Class 
 
 class Doodle {
 	constructor (player, doodle) {
@@ -42,10 +51,8 @@ const game = {
 		})
 	}, 
 	setDoodles () {
-		const randInd1 = Math.floor(Math.random()*doodleArray.length);
-		player1.doodle = new Doodle ("1", doodleArray[randInd1]);
-		const randInd2 = Math.floor(Math.random()*doodleArray.length);
-		player2.doodle = new Doodle ("2", doodleArray[randInd1]);
+		player1.getDoodle();
+		player2.getDoodle();
 	},
 	drawDoodles() {
 		player1.doodle.draw();
@@ -59,6 +66,10 @@ const player1 = {
 	lives: 3,
 	block: false,
 	doodle: null,
+	getDoodle () {
+		const randInd1 = Math.floor(Math.random()*doodleArray.length);
+		this.doodle = new Doodle ("1", doodleArray[randInd1]);
+	},
 	displayHealth () {
 		health1.textContent = this.doodle.health.toString();
 	},
@@ -100,7 +111,6 @@ const player1 = {
 		if (this.block) {
 			if (evt.key === "d") {
 				batBData2.damage = 0;
-				console.log("Player 1 Blocked the attack!");
 			}
 		}
 	}
@@ -110,6 +120,10 @@ const player2 = {
 	lives: 3,
 	block: false,
 	doodle: null,
+	getDoodle () {
+		const randInd2 = Math.floor(Math.random()*doodleArray.length);
+		this.doodle = new Doodle ("2", doodleArray[randInd2]);
+	},
 	displayHealth () {
 		health2.textContent = this.doodle.health.toString();
 	},
@@ -151,7 +165,6 @@ const player2 = {
 		if (this.block) {
 			if (evt.key === "l") {
 				batBData1.damage = 0;
-				console.log("Player 2 Blocked the attack!");
 			}
 		}
 	}
