@@ -4,8 +4,11 @@ const canvasBB2 = document.getElementById("battle-bar-2");
 const ctxBB2 = canvasBB2.getContext("2d");
 const message2 = document.getElementById("message-2");
 const health2 = document.getElementById("health-2");
+const block2 = document.getElementById("block-2");
 
 const batBData2 = {
+	damage: 0,
+	pHit: false,
 	delayHandle: null,
 	delay: 0,
 	minDelayHit: 2,
@@ -43,26 +46,6 @@ const batBData2 = {
 		this.dotF = true;
 		animateDot2();
 	},
-	keypress (evt) {
-
-		if (this.active) {
-			if (this.dotMoving) {
-				if (evt.key === "j") {
-					this.dotMoving = false; 
-					stopDot2(); 
-					attackDot2.checkHit();
-					this.attackDelay();
-				}
-			}
-
-			if (evt.key === "q") {
-				if (this.dotMoving) {
-					this.dotMoving = false;
-					stopDot2();
-				}
-			}
-		}
-	},
 	attackDelay () {
 
 		this.active = false;
@@ -80,6 +63,7 @@ const batBData2 = {
 			} else {
 				clearInterval(this.delayHandle);
 				this.delay = 0;
+				player2.dealDamage();
 				this.activate();
 			};
 		}, 500)
@@ -159,25 +143,32 @@ const attackDot2 = {
 
 		if (batBData2.dotF) {
 			if (this.x + this.r <= rightLim && this.x - this.r >= leftLim) {
-				console.log("P2: PERFECT HIT!");
+				message2.textContent = "PERFECT HIT!";
 				batBData2.lastAttackHit = true;
+				batBData2.pHit = true;
+				batBData2.damage = this.speed;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("P2: HIT!");
+				message2.textContent = "HIT!";
 				batBData2.lastAttackHit = true;
+				batBData2.damage = this.speed;
 			}
 		}
 		if (!batBData2.dotF) {
 			if (this.x - this.r >= leftLim && this.x + this.r <= rightLim) {
-				console.log("P2: PERFECT HIT!");
+				message2.textContent = "PERFECT HIT!";
 				batBData2.lastAttackHit = true;
+				batBData2.pHit = true;
+				batBData2.damage = this.speed;
 			} else if (this.x >= leftLim && this.x <= rightLim) {
-				console.log("P2: HIT!");
+				message2.textContent = "HIT!";
 				batBData2.lastAttackHit = true;
+				batBData2.damage = this.speed;
 			}
 		}
 
 		if (!batBData2.lastAttackHit) {
-			console.log("P2: MISS!");
+			message2.textContent = "MISS!";
+			batBData2.damage = 0;
 		}
 	}
 }
@@ -223,4 +214,3 @@ function animateDot2 () {
 function stopDot2 () {
 	cancelAnimationFrame(batBData2.aniHandle);
 }
-

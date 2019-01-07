@@ -2,12 +2,32 @@ body {
 	background-color: cadetblue;
 }
 
-.bar {
-	margin-top: 40px;
-	display: inline-flex;
+#arena {
+	min-height: 500px;
+	min-width: 600px;
+	display: flex;
 	justify-content: space-around;
+	align-items: center;
+	border: 2px solid black;
+}
+
+.bar {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	height: 70%;
+	width: 40%;
+}
+
+.block {
+	display: inline-flex;
 	height: 40px;
-	width: 500px;
+	width: 80px;
+	background-color: white;
+	color: black;
+	align-items: center;
+	justify-content: center;
 }
 
 .window {

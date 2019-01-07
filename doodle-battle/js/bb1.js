@@ -4,6 +4,7 @@ const canvasBB1 = document.getElementById("battle-bar-1");
 const ctxBB1 = canvasBB1.getContext("2d");
 const message1 = document.getElementById("message-1");
 const health1 = document.getElementById("health-1");
+const block1 = document.getElementById("block-1");
 
 const batBData1 = {
 	damage: 0,
@@ -26,14 +27,6 @@ const batBData1 = {
 	aniX: 0,
 	minSpeed: 5,
 	maxSpeed: 8,
-	attack () {
-		if (this.pHit) {
-			return;
-		}
-		if (!this.lastAttackHit) {
-			return;
-		}
-	},
 	erase () {
 		ctxBB1.clearRect(0, 0, this.canW, this.canH);
 	},
@@ -53,27 +46,6 @@ const batBData1 = {
 		this.dotF = true;
 		animateDot1();
 	},
-	keypress (evt) {
-
-		if (this.active) {
-			if (this.dotMoving) {
-				if (evt.key === "a") {
-					this.dotMoving = false; 
-					stopDot1(); 
-					attackDot1.checkHit();
-					this.attack();
-					this.attackDelay();
-				}
-			}
-
-			if (evt.key === "q") {
-				if (this.dotMoving) {
-					this.dotMoving = false;
-					stopDot1();
-				}
-			}
-		}
-	},
 	attackDelay () {
 
 		this.active = false;
@@ -91,14 +63,10 @@ const batBData1 = {
 			} else {
 				clearInterval(this.delayHandle);
 				this.delay = 0;
-				this.dealDamage();
+				player1.dealDamage();
 				this.activate();
 			};
 		}, 500)
-	},
-	dealDamage () {
-		player2.health = player2.health -= this.damage;
-		player2.displayHealth();
 	}
 }
 
