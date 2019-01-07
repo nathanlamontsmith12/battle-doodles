@@ -7,12 +7,15 @@ const doodleArray = [];
 class Doodle {
 	constructor (player, doodle) {
 		this.player = player;
-		this.draw = doodle.draw;
-		this.setAttr = doodle.setAttr;
+		this.name = doodle.name;
+		this.health = doodle.health;
+		this.src = doodle.src;
 	}
-	make () {
-		this.draw();
-		this.setAttr();
+	draw () {
+		const image = document.createElement("IMG");
+		image.src = this.src;
+		const location = document.getElementById("doodle-" + this.player);
+		location.appendChild(image);
 	}
 }
 
@@ -27,8 +30,8 @@ const game = {
 		batBData2.activate();
 		player1.clearBlock();
 		player2.clearBlock();
-		player1.getDoodle();
-		player2.getDoodle();
+		this.setDoodles();
+		this.drawDoodles();
 		player1.displayHealth();
 		player2.displayHealth();
 	},
@@ -37,6 +40,16 @@ const game = {
 		filler.forEach((elem) => {
 			doodleArray.push(elem);
 		})
+	}, 
+	setDoodles () {
+		const randInd1 = Math.floor(Math.random()*doodleArray.length);
+		player1.doodle = new Doodle ("1", doodleArray[randInd1]);
+		const randInd2 = Math.floor(Math.random()*doodleArray.length);
+		player2.doodle = new Doodle ("2", doodleArray[randInd1]);
+	},
+	drawDoodles() {
+		player1.doodle.draw();
+		player2.doodle.draw();
 	}
 }
 
@@ -44,16 +57,10 @@ const game = {
 
 const player1 = {
 	lives: 3,
-	health: 0,
 	block: false,
 	doodle: null,
-	getDoodle () {
-		const randInd = Math.floor(Math.random()*doodleArray.length);
-		this.doodle = new Doodle ("1", doodleArray[randInd]);
-		this.doodle.make();
-	},
 	displayHealth () {
-		health1.textContent = this.health.toString();
+		health1.textContent = this.doodle.health.toString();
 	},
 	displayBlock () {
 		block1.style.visibility = "visible";
@@ -74,7 +81,7 @@ const player1 = {
 	dealDamage () {
 		player2.clearBlock();
 		player2.block = false;
-		player2.health = player2.health -= batBData1.damage;
+		player2.doodle.health = player2.doodle.health -= batBData1.damage;
 		player2.displayHealth();
 	},
 	keypress (evt) {
@@ -101,16 +108,10 @@ const player1 = {
 
 const player2 = {
 	lives: 3,
-	health: 0,
 	block: false,
 	doodle: null,
-	getDoodle () {
-		const randInd = Math.floor(Math.random()*doodleArray.length);
-		this.doodle = new Doodle ("2", doodleArray[randInd]);
-		this.doodle.make();
-	},
 	displayHealth () {
-		health2.textContent = this.health.toString();
+		health2.textContent = this.doodle.health.toString();
 	},
 	displayBlock () {
 		block2.style.visibility = "visible";
@@ -131,7 +132,7 @@ const player2 = {
 	dealDamage () {
 		player1.clearBlock();
 		player1.block = false;
-		player1.health = player1.health -= batBData2.damage;
+		player1.doodle.health = player1.doodle.health -= batBData2.damage;
 		player1.displayHealth();
 	},
 	keypress (evt) {
@@ -156,7 +157,11 @@ const player2 = {
 	}
 }
 
-game.init2();
+// CACHED ELEMENTS 
+
+
+
+// EVENT LISTENERS 
 
 document.addEventListener("keypress", (evt) => {
 
@@ -167,3 +172,6 @@ document.addEventListener("keypress", (evt) => {
 	player2.keypress(evt);
 
 })
+
+
+game.init2();
