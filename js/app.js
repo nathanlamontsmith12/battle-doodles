@@ -156,7 +156,7 @@ const game = {
 		allImages.forEach( (elem) => {
 			elem.style.opacity = 1;
 		})
-	}
+	},
 }
 
 
@@ -220,6 +220,16 @@ const player1 = {
 		player2.displayHealth();
 		player2.checkHealth();
 		player2.checkLives();
+	},
+	updateSelectionDisplay () {
+		this.startingDoodles.forEach( (elem, index) => {
+			const location = document.getElementById(`p1-selection-${index + 1}`);
+			const picToPlace = document.createElement("IMG");
+			const doodlePicInd = parseInt(elem);
+			picToPlace.src = doodleLibrary[doodlePicInd].src;
+			picToPlace.classList.add("miniSelDisp");
+			location.appendChild(picToPlace);
+		});	
 	},
 	keypress (evt) {
 
@@ -309,6 +319,16 @@ const player2 = {
 		player1.checkHealth();
 		player1.checkLives();
 	},
+	updateSelectionDisplay () {
+		player2.startingDoodles.forEach( (elem, index) => {
+			const location = document.getElementById(`p2-selection-${index + 1}`);
+			const picToPlace = document.createElement("IMG");
+			const doodlePicInd = parseInt(elem);
+			picToPlace.src = doodleLibrary[doodlePicInd].src;
+			picToPlace.classList.add("miniSelDisp");
+			location.appendChild(picToPlace);
+		});
+	},
 	keypress (evt) {
 
 		if (batBData2.active) {
@@ -352,22 +372,6 @@ const rulesDisplay = document.getElementById("rules");
 const doodleDescDisplay = document.getElementById("doodle-descriptions");
 
 
-		// <div id="s-screen-display">
-		// 	<div id="menu">
-		// 	</div>
-		// 	<div id="rules">
-		// 	</div>
-		// 	<div id="doodle-descriptions">
-		// 	</div>
-		// </div>
-		// <div id="s-screen-button-row">
-		// 	<button id="doodle-menu-btn">DOODLE SELECTION</button>
-		// 	<button id="rules-btn">RULES</button>
-		// 	<button id="doodle-descriptions-btn">DOODLE DESCRIPTIONS</button>
-		// 	<button id="clear-selections-btn">CLEAR SELECTIONS</button>
-		// </div>
-
-
 
 // EVENT LISTENERS 
 
@@ -400,6 +404,10 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 		return;
 	}
 
+	if (evt.target.className === "menuItem") {
+		return;
+	}
+
 	if (evt.target.className === "noClick") {
 		return;
 	}
@@ -426,22 +434,8 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 	}
 
 	game.clearSelectionDisplay();
-
-	player1.startingDoodles.forEach( (elem, index) => {
-		const location = document.getElementById(`p1-selection-${index + 1}`);
-		const picToPlace = document.createElement("IMG");
-		picToPlace.src = doodleLibrary[elem].src;
-		picToPlace.classList.add("miniSelDisp");
-		location.appendChild(picToPlace);
-	});
-
-	player2.startingDoodles.forEach( (elem, index) => {
-		const location = document.getElementById(`p2-selection-${index + 1}`);
-		const picToPlace = document.createElement("IMG");
-		picToPlace.src = doodleLibrary[elem].src;
-		picToPlace.classList.add("miniSelDisp");
-		location.appendChild(picToPlace);
-	});
+	player1.updateSelectionDisplay();
+	player2.updateSelectionDisplay();
 
 	if (game.playerSelection === 1) {
 		game.playerSelection = 2;
@@ -472,6 +466,12 @@ document.addEventListener("keypress", (evt) => {
 // FUNCTIONS 
 
 game.init0();
+
+function display () {
+	console.log(game);
+	console.log(player1);
+	console.log(player2);
+}
 
 function animateBlock () {
 
