@@ -172,5 +172,53 @@ body {
 	background-color: white;
 }
 
-.doodleDisplay img {
+/*.doodleDisplay img {
+}*/
+
+.doodlePool {
+	border: 5px solid black;
+	background-color: white;
 }
+
+#arena h3 {
+	margin: 5px;
+	color: black;
+}
+
+#arena h2 {
+	margin: 5px;
+	color: black;
+}
+
+.healthBar {
+	width: 200px;
+	height: 30px;
+	z-index: 2;
+	background-color: red;
+	display: flex;
+	flex-direction: column;
+}
+
+.healthRemaining {
+	height: 30px;
+	display: flex;
+	align-items: center;
+	z-index: 4;
+	background-color: white;
+}
+
+.healthRemaining span {
+	margin: 2px;
+}
+
+#p1-health-remaining {
+	justify-content: flex-end;
+}
+
+#p2-health-remaining {
+	justify-content: flex-start;
+	align-self: flex-end;
+}
+
+
+

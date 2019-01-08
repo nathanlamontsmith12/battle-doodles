@@ -4,7 +4,7 @@ const doodleLibrary = [
 	{
 		name: "SNAKE-ISH",
 		id: "snake-ish",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -16,7 +16,7 @@ const doodleLibrary = [
 	{
 		name: "WILY WISP", 
 		id: "wily-wisp",	
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -28,7 +28,7 @@ const doodleLibrary = [
 	{
 		name: "THE BIG NOPE",
 		id: "big-nope",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -40,7 +40,7 @@ const doodleLibrary = [
 	{
 		name: "TRIANGLE MAN",
 		id: "triangle-man",		
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -52,7 +52,7 @@ const doodleLibrary = [
 	{
 		name: "PARTICLE MAN",
 		id: "particle-man",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -64,7 +64,7 @@ const doodleLibrary = [
 	{
 		name: "SUAVE BOX",
 		id: "suave-box",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -76,7 +76,7 @@ const doodleLibrary = [
 	{
 		name: "PROBLEMATIC DOG",
 		id: "problematic-dog",		
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -88,7 +88,7 @@ const doodleLibrary = [
 	{
 		name: "WEDGE BUG",
 		id: "wedge-bug",		
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -100,7 +100,7 @@ const doodleLibrary = [
 	{
 		name: "CAT BAT",
 		id: "cat-bat",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },
@@ -112,7 +112,7 @@ const doodleLibrary = [
 	{
 		name: "LIL' GUY",
 		id: "lil-guy",
-		health: 30,
+		maxHealth: 50,
 		strength: 2,
 		blockHurt: 2,
 		setSpecial () { },

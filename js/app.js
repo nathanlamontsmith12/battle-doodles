@@ -47,7 +47,8 @@ class Doodle {
 	constructor (player, doodle) {
 		this.player = player;
 		this.name = doodle.name;
-		this.health = doodle.health;
+		this.health = doodle.maxHealth;
+		this.maxHealth = doodle.maxHealth;
 		this.src = doodle.src;
 		this.strength = doodle.strength;
 		this.setSpecial = doodle.setSpecial;
@@ -106,6 +107,9 @@ const game = {
 		this.refillDoodleArray();
 		this.loadMenu();
 	},
+	init1 () {
+		// SAVED for possible one-player mode set up
+	},
 	init2 () {
 		document.getElementById("s-screen").style.display = "none";
 		this.showArena();
@@ -116,6 +120,7 @@ const game = {
 		this.setLives();
 		player1.displayLives();
 		player2.displayLives();
+		this.setDoodlePool();
 		animateBlock();
 	},
 	refillDoodleArray () {
@@ -127,6 +132,16 @@ const game = {
 	setDoodles () {
 		player1.getDoodle();
 		player2.getDoodle();
+	},
+	setDoodlePool () {
+		poolLocation1.appendChild(p1DoodlePool);
+		poolLocation2.appendChild(p2DoodlePool);
+		const tBR = document.querySelectorAll(".sDisplay p");
+		tBR.forEach( (elem) => {
+			elem.style.display = "none";
+		});
+		p1DoodlePool.style.borderStyle = "none";
+		p2DoodlePool.style.borderStyle = "none";
 	},
 	setLives () {
 		player1.lives = this.totLives;
@@ -162,7 +177,6 @@ const game = {
 
 // Player data 
 
-
 // PLAYER   1
 
 
@@ -181,6 +195,10 @@ const player1 = {
 	},
 	displayHealth () {
 		health1.textContent = this.doodle.health.toString();
+		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+		hBarPerc = hBarPerc.toString();
+		console.log(hBarPerc);
+		document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
 	},
 	checkHealth () {
 		if (this.doodle.health <= 0) {
@@ -203,6 +221,8 @@ const player1 = {
 	doodleKO () {
 		this.doodle.clearSpecial();
 		this.doodle.erase();
+		const dPImages = document.querySelectorAll("#player-1-s-display .miniSelDisp");
+		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
 	},
@@ -279,6 +299,10 @@ const player2 = {
 	},
 	displayHealth () {
 		health2.textContent = this.doodle.health.toString();
+		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+		hBarPerc = hBarPerc.toString();
+		console.log(hBarPerc);
+		document.getElementById("p2-health-remaining").style.width = `${hBarPerc}%`;
 	},
 	checkHealth () {
 		if (this.doodle.health <= 0) {
@@ -301,6 +325,8 @@ const player2 = {
 	doodleKO () {
 		this.doodle.clearSpecial();
 		this.doodle.erase();
+		const dPImages = document.querySelectorAll("#player-2-s-display .miniSelDisp");
+		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
 	},
@@ -366,10 +392,18 @@ const doodleDescDispBtn = document.getElementById("doodle-descriptions-btn");
 const clearSelectionsBtn = document.getElementById("clear-selections-btn");
 
 
-// displays 
+// displays -- starting screen 
 const selectionMenu = document.getElementById("menu");
 const rulesDisplay = document.getElementById("rules");
 const doodleDescDisplay = document.getElementById("doodle-descriptions");
+
+
+// displays -- arena screen 
+const poolLocation1 = document.getElementById("doodle-pool-player-1");
+const poolLocation2 = document.getElementById("doodle-pool-player-2");
+const p1DoodlePool = document.getElementById("player-1-s-display");
+const p2DoodlePool = document.getElementById("player-2-s-display");
+
 
 
 
