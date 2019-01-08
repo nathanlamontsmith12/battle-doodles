@@ -129,12 +129,18 @@ const game = {
 		player2.getDoodle();
 	},
 	setLives () {
-		player1.lives = game.totLives;
-		player2.lives = game.totLives;
+		player1.lives = this.totLives;
+		player2.lives = this.totLives;
 	},
-	drawDoodles() {
+	drawDoodles () {
 		player1.doodle.draw();
 		player2.doodle.draw();
+	},
+	clearSelections () {
+		this.selections = [];
+		this.playerSelection = 1;
+		player1.startingDoodles = [];
+		player2.startingDoodles = [];
 	},
 	clearSelectionDisplay () {
 		const allSelected = document.querySelectorAll(".miniSelDisp");
@@ -142,6 +148,14 @@ const game = {
 		for (let m = 0; m < allSelected.length; m++) {
 			allSelected[m].remove();
 		}
+	},
+	wipeSelections () {
+		this.clearSelections();
+		this.clearSelectionDisplay();
+		const allImages = document.querySelectorAll(".menuItem img");
+		allImages.forEach( (elem) => {
+			elem.style.opacity = 1;
+		})
 	}
 }
 
@@ -323,34 +337,60 @@ const player2 = {
 	}
 }
 
-// CACHED ELEMENTS 
+// *** CACHED ELEMENTS *** 
+
+// buttons
+const menuDisplayBtn = document.getElementById("doodle-menu-btn");
+const rulesDisplayBtn = document.getElementById("rules-btn");
+const doodleDescDispBtn = document.getElementById("doodle-descriptions-btn");
+const clearSelectionsBtn = document.getElementById("clear-selections-btn");
+
+
+// displays 
+const selectionMenu = document.getElementById("menu");
+const rulesDisplay = document.getElementById("rules");
+const doodleDescDisplay = document.getElementById("doodle-descriptions");
+
+
+		// <div id="s-screen-display">
+		// 	<div id="menu">
+		// 	</div>
+		// 	<div id="rules">
+		// 	</div>
+		// 	<div id="doodle-descriptions">
+		// 	</div>
+		// </div>
+		// <div id="s-screen-button-row">
+		// 	<button id="doodle-menu-btn">DOODLE SELECTION</button>
+		// 	<button id="rules-btn">RULES</button>
+		// 	<button id="doodle-descriptions-btn">DOODLE DESCRIPTIONS</button>
+		// 	<button id="clear-selections-btn">CLEAR SELECTIONS</button>
+		// </div>
+
 
 
 // EVENT LISTENERS 
 
-
-
-document.addEventListener("keypress", (evt) => {
-
-// Battle bar 1: 
-	player1.keypress(evt);
-
-// Battle bar 2: 
-	player2.keypress(evt);
-
+menuDisplayBtn.addEventListener("click", (evt) => {
+	rulesDisplay.style.display = "none";
+	doodleDescDisplay.style.display = "none";
+	selectionMenu.style.display = "flex";
 })
 
+rulesDisplayBtn.addEventListener("click", (evt) => {
+	doodleDescDisplay.style.display = "none";
+	selectionMenu.style.display = "none";
+	rulesDisplay.style.display = "block";
+})
 
-document.getElementById("clear-selections-btn").addEventListener("click", () => {
-	game.selections = [];
-	game.playerSelection = 1;
-	player1.startingDoodles = [];
-	player2.startingDoodles = [];
-	game.clearSelectionDisplay();
-	const allImages = document.querySelectorAll(".menuItem img");
-	allImages.forEach( (elem) => {
-		elem.style.opacity = 1;
-	})
+doodleDescDispBtn.addEventListener("click", (evt) => {
+	rulesDisplay.style.display = "none";
+	selectionMenu.style.display = "none";
+	doodleDescDisplay.style.display = "block";
+})
+
+clearSelectionsBtn.addEventListener("click", () => {
+	game.wipeSelections();
 })
 
 
@@ -415,6 +455,18 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 		game.init2();
 	}
 })
+
+
+document.addEventListener("keypress", (evt) => {
+
+// Battle bar 1: 
+	player1.keypress(evt);
+
+// Battle bar 2: 
+	player2.keypress(evt);
+
+})
+
 
 
 // FUNCTIONS 

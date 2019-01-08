@@ -3,8 +3,36 @@ body {
 }
 
 #s-screen {
-	margin: 20px 0 0 20px;
-	width: 600px;
+	margin: 20px auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 500px;
+	max-width: 800px;
+}
+
+#s-screen-display {
+	background-color: white;
+	min-height: 250px;
+	border: black solid 5px;
+}
+
+#menu {
+	padding: 40px;
+	display: flex;
+	justify-content: space-around;
+	background-color: white;
+	flex-wrap: wrap;
+}
+
+#rules {
+	display: none;
+	margin: auto;
+}
+
+#doodle-descriptions {
+	display: none;
+	margin: auto;
 }
 
 #s-screen-button-row {
@@ -45,15 +73,6 @@ body {
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-}
-
-#menu {
-	padding: 40px;
-	border: black solid 5px;
-	display: flex;
-	justify-content: space-around;
-	background-color: white;
-	flex-wrap: wrap;
 }
 
 .menuItem {
