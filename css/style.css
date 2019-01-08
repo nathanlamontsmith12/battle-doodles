@@ -75,6 +75,11 @@ body {
 .selectionDisp {
 	border: 1px solid black;
 	margin: 5px;
+	height: 61px;
+	width: 61px;
+}
+
+.selectionDisp img {
 	height: 60px;
 	width: 60px;
 }

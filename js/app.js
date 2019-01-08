@@ -89,11 +89,12 @@ const game = {
 			doodleIMG.src = elem.src;
 			doodleIMG.id = index.toString();
 			const doodleName = document.createElement("P");
+			doodleName.classList.add("noClick");
 			doodleName.textContent = elem.name;
 			document.getElementById("menu").appendChild(menuItem);
 			menuItem.appendChild(doodleIMG);
 			menuItem.appendChild(doodleName);
-		})
+		});
 	},
 	showArena () {
 		document.getElementById("arena").style.display = "flex";
@@ -135,6 +136,13 @@ const game = {
 		player1.doodle.draw();
 		player2.doodle.draw();
 	},
+	clearSelectionDisplay () {
+		const allSelected = document.querySelectorAll(".miniSelDisp");
+
+		for (let m = 0; m < allSelected.length; m++) {
+			allSelected[m].remove();
+		}
+	}
 }
 
 
@@ -320,9 +328,40 @@ const player2 = {
 
 // EVENT LISTENERS 
 
+
+
+document.addEventListener("keypress", (evt) => {
+
+// Battle bar 1: 
+	player1.keypress(evt);
+
+// Battle bar 2: 
+	player2.keypress(evt);
+
+})
+
+
+document.getElementById("clear-selections-btn").addEventListener("click", () => {
+	game.selections = [];
+	game.playerSelection = 1;
+	player1.startingDoodles = [];
+	player2.startingDoodles = [];
+	game.clearSelectionDisplay();
+})
+
+
 document.getElementById("menu").addEventListener("click", (evt) => {
 
+	if (evt.target.id === "menu") {
+		return;
+	}
+
+	if (evt.target.className === "noClick") {
+		return;
+	}
+
 	if (game.selections.length >= (game.totLives)*2) {
+		game.init2();
 		return;
 	}
 
@@ -342,6 +381,24 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 		player2.startingDoodles.push(tracker);
 	}
 
+	game.clearSelectionDisplay();
+
+	player1.startingDoodles.forEach( (elem, index) => {
+		const location = document.getElementById(`p1-selection-${index + 1}`);
+		const picToPlace = document.createElement("IMG");
+		picToPlace.src = doodleLibrary[elem].src;
+		picToPlace.classList.add("miniSelDisp");
+		location.appendChild(picToPlace);
+	});
+
+	player2.startingDoodles.forEach( (elem, index) => {
+		const location = document.getElementById(`p2-selection-${index + 1}`);
+		const picToPlace = document.createElement("IMG");
+		picToPlace.src = doodleLibrary[elem].src;
+		picToPlace.classList.add("miniSelDisp");
+		location.appendChild(picToPlace);
+	});
+
 	if (game.playerSelection === 1) {
 		game.playerSelection = 2;
 	} else {
@@ -353,16 +410,6 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 	if (game.selections.length >= (game.totLives*2)) {
 		game.init2();
 	}
-})
-
-document.addEventListener("keypress", (evt) => {
-
-// Battle bar 1: 
-	player1.keypress(evt);
-
-// Battle bar 2: 
-	player2.keypress(evt);
-
 })
 
 
