@@ -76,7 +76,7 @@ class Doodle {
 
 const game = {
 	playerSelection: 1,
-	totLives: 2,
+	totLives: 3,
 	totPlayers: 0,
 	blockAniHandle: null,
 	selections: [],
@@ -88,8 +88,11 @@ const game = {
 			const doodleIMG = document.createElement("IMG");
 			doodleIMG.src = elem.src;
 			doodleIMG.id = index.toString();
+			const doodleName = document.createElement("P");
+			doodleName.textContent = elem.name;
 			document.getElementById("menu").appendChild(menuItem);
 			menuItem.appendChild(doodleIMG);
+			menuItem.appendChild(doodleName);
 		})
 	},
 	showArena () {
@@ -103,12 +106,13 @@ const game = {
 		this.loadMenu();
 	},
 	init2 () {
-		document.getElementById("menu").style.display = "none";
+		document.getElementById("s-screen").style.display = "none";
 		this.showArena();
 		batBData1.activate();
 		batBData2.activate();
 		this.setDoodles();
 		this.drawDoodles();
+		this.setLives();
 		player1.displayLives();
 		player2.displayLives();
 		animateBlock();
@@ -122,6 +126,10 @@ const game = {
 	setDoodles () {
 		player1.getDoodle();
 		player2.getDoodle();
+	},
+	setLives () {
+		player1.lives = game.totLives;
+		player2.lives = game.totLives;
 	},
 	drawDoodles() {
 		player1.doodle.draw();
@@ -138,7 +146,7 @@ const game = {
 
 
 const player1 = {
-	lives: 2,
+	lives: 0,
 	attacking: false,
 	block: false,
 	doodle: null,
@@ -226,7 +234,7 @@ const player1 = {
 
 
 const player2 = {
-	lives: 2,
+	lives: 0,
 	attacking: false,
 	block: false,
 	doodle: null,

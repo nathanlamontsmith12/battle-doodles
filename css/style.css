@@ -2,18 +2,79 @@ body {
 	background-color: cadetblue;
 }
 
+#s-screen {
+	margin: 20px 0 0 20px;
+	width: 600px;
+}
+
+#s-screen-button-row {
+	border: 5px solid black;
+	margin-top: 30px;
+	height: 40px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: cadetblue;
+}
+
+#s-screen-button-row button {
+	font-weight: 600;
+}
+
+#player-s-display-container {
+	margin-top: 30px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.sDisplay {
+	width: 280px;
+	border: 5px solid black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: white;
+}
+
+.sDisplay p {
+	margin: 10px 0 0 0;
+}
+
+.sDisplayRow {
+	margin-top: 10px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
 #menu {
-	width: 500px;
 	padding: 40px;
 	border: black solid 5px;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	background-color: white;
 	flex-wrap: wrap;
 }
 
+.menuItem {
+	margin: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
 .menuItem img {
-	margin: 20px;
+	height: 60px;
+	width: 60px;
+}
+
+.menuItem p {
+	margin: 0;
+}
+
+.selectionDisp {
+	border: 1px solid black;
+	margin: 5px;
 	height: 60px;
 	width: 60px;
 }
