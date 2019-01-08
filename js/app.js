@@ -347,6 +347,10 @@ document.getElementById("clear-selections-btn").addEventListener("click", () => 
 	player1.startingDoodles = [];
 	player2.startingDoodles = [];
 	game.clearSelectionDisplay();
+	const allImages = document.querySelectorAll(".menuItem img");
+	allImages.forEach( (elem) => {
+		elem.style.opacity = 1;
+	})
 })
 
 
