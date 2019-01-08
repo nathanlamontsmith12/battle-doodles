@@ -197,7 +197,6 @@ const player1 = {
 		health1.textContent = this.doodle.health.toString();
 		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
 		hBarPerc = hBarPerc.toString();
-		console.log(hBarPerc);
 		document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
 	},
 	checkHealth () {
@@ -301,7 +300,6 @@ const player2 = {
 		health2.textContent = this.doodle.health.toString();
 		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
 		hBarPerc = hBarPerc.toString();
-		console.log(hBarPerc);
 		document.getElementById("p2-health-remaining").style.width = `${hBarPerc}%`;
 	},
 	checkHealth () {
