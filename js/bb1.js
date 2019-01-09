@@ -1,11 +1,64 @@
 console.log("Battle Bar 1 Linked");
 
-const canvasBB1 = document.getElementById("battle-bar-1");
-const ctxBB1 = canvasBB1.getContext("2d");
-const message1 = document.getElementById("message-1");
-const health1 = document.getElementById("health-1");
-const block1 = document.getElementById("block-1");
+// const canvasBB1 = document.getElementById("battle-bar-1");
+// const ctxBB1 = canvasBB1.getContext("2d");
+// const message1 = document.getElementById("message-1");
+// const health1 = document.getElementById("health-1");
+// const block1 = document.getElementById("block-1");
 
+
+
+class Player {
+	constructor (player) {
+		this.player = player;
+		this.lives = 0;
+		this.doodle = {
+			name: "SNAKE-ISH",
+			id: "snake-ish",
+			maxHealth: 50,
+			strength: 2,
+			blockHurt: 2,
+			setSpecial () { },
+			clearSpecial () { },
+			natFacingRight: false,
+			src: "images/snake-ish.png",
+			attackAnimation () { },		
+		};
+		this.startingDoodles = [];
+		this.batData = {
+			attacking: false,
+			beingAttacked: false,
+			blockFlag: true,
+			block: false,
+			damage: 0,
+			pHit: false,
+			delayHandle: null,
+			delay: 0,
+			maxDelay: 10,
+			delayPenalty: 2,
+			minDelayHit: 2,
+			maxDelayHit: 4,
+			minDelayMiss: 2,
+			maxDelayMiss: 6,
+			lastAttackHit: true,
+			active: false,
+			width: game.canWidth,
+			height: game.canHeight,
+			hitW: 20,
+			dotR: 7,
+			dotMoving: false,
+			dotF: true,
+			aniHandle: null,
+			aniX: 0,
+			minSpeed: 5,
+			maxSpeed: 8,
+			speed: 1,
+			x: 0,
+			y: 0,
+			color: "white"
+		};
+	}
+}
 
 class BattleBar {
 	constructor (player) {
@@ -24,37 +77,37 @@ class BattleBar {
 		};
 	}
 	setHitBox () {
-		this.hitBox.x = (player1.batData.width/2) - (player1.batData.hitW/2);
+		this.hitBox.x = (game.players[this.player].batData.width/2) - (game.players[this.player].batData.hitW/2);
 		this.hitBox.y = 0; 
-		this.hitBox.width = player1.batData.hitW;
-		this.hitBox.height = player1.batData.height;
+		this.hitBox.width = game.players[this.player].batData.hitW;
+		this.hitBox.height = game.players[this.player].batData.height;
 		this.hitBox.color = "red";
 	}
 	setAttackDot () {
-		this.attackDot.x = player1.batData.dotR;
-		this.attackDot.y = player1.batData.height/2; 
-		this.attackDot.r = player1.batData.dotR;
+		this.attackDot.x = game.players[this.player].batData.dotR;
+		this.attackDot.y = game.players[this.player].batData.height/2; 
+		this.attackDot.r = game.players[this.player].batData.dotR;
 	}
 	drawBBar () {
-		ctxBB1.beginPath();
-		ctxBB1.rect(player1.batData.x, player1.batData.y, player1.batData.width, player1.batData.height);
-		ctxBB1.fillStyle = player1.batData.color;
-		ctxBB1.fill();
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.rect(game.players[this.player].batData.x, game.players[this.player].batData.y, game.players[this.player].batData.width, game.players[this.player].batData.height);
+		game.players[this.player].ctx.fillStyle = game.players[this.player].batData.color;
+		game.players[this.player].ctx.fill();
 	}
 	drawHBox () {
-		ctxBB1.beginPath();
-		ctxBB1.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-		ctxBB1.fillStyle = this.hitBox.color;
-		ctxBB1.fill();
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+		game.players[this.player].ctx.fillStyle = this.hitBox.color;
+		game.players[this.player].ctx.fill();
 	}
 	drawADot () {
-		ctxBB1.beginPath();
-		ctxBB1.arc(this.attackDot.x, this.attackDot.y, this.attackDot.r, 0, 2*Math.PI);
-		ctxBB1.fillStyle = "black";
-		ctxBB1.fill();
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.arc(this.attackDot.x, this.attackDot.y, this.attackDot.r, 0, 2*Math.PI);
+		game.players[this.player].ctx.fillStyle = "black";
+		game.players[this.player].ctx.fill();
 	}
 	erase () {
-		ctxBB1.clearRect(0, 0, player1.batData.width, player1.batData.height);
+		game.players[this.player].ctx.clearRect(0, 0, game.players[this.player].batData.width, game.players[this.player].batData.height);
 	}
 	eraseDDot () {
 		this.erase();
@@ -62,14 +115,14 @@ class BattleBar {
 		this.drawHBox();
 	}
 	checkDotDirection () {
-		if (player1.batData.aniX >= (player1.batData.width - (this.attackDot.r*2))) {	
+		if (game.players[this.player].batData.aniX >= (game.players[this.player].batData.width - (this.attackDot.r*2))) {	
 
-			player1.batData.aniX = 0;
+			game.players[this.player].batData.aniX = 0;
 
-			if (player1.batData.dotF) {
-				player1.batData.dotF = false;
+			if (game.players[this.player].batData.dotF) {
+				game.players[this.player].batData.dotF = false;
 			} else {
-				player1.batData.dotF = true;
+				game.players[this.player].batData.dotF = true;
 			}
 		}
 	}
@@ -77,50 +130,50 @@ class BattleBar {
 		this.erase();
 		this.drawBBar();
 		this.drawHBox();
-		if (player1.batData.dotF) {
-			this.attackDot.x += player1.batData.speed;
+		if (game.players[this.player].batData.dotF) {
+			this.attackDot.x += game.players[this.player].batData.speed;
 		} else {
-			this.attackDot.x -= player1.batData.speed;
+			this.attackDot.x -= game.players[this.player].batData.speed;
 		}
 		this.drawADot();
 	}
 	setSpeed () {
-		const newSpeedMod = Math.floor(Math.random()*(player1.batData.maxSpeed - player1.batData.minSpeed + 1));
-		player1.batData.speed = player1.batData.minSpeed + newSpeedMod;
+		const newSpeedMod = Math.floor(Math.random()*(game.players[this.player].batData.maxSpeed - game.players[this.player].batData.minSpeed + 1));
+		game.players[this.player].batData.speed = game.players[this.player].batData.minSpeed + newSpeedMod;
 	}
 	reset () {
 	 	this.erase();
-		player1.batData.delay = 0;
-		player1.batData.active = true;
-		player1.batData.aniX = 0;
-		this.attackDot.x = player1.batData.dotR;
+		game.players[this.player].batData.delay = 0;
+		game.players[this.player].batData.active = true;
+		game.players[this.player].batData.aniX = 0;
+		this.attackDot.x = game.players[this.player].batData.dotR;
 		this.setSpeed();
 		this.drawBBar();
 		this.drawHBox();
 		this.drawADot();
-		player1.batData.dotMoving = true;
-		player1.batData.dotF = true;
+		game.players[this.player].batData.dotMoving = true;
+		game.players[this.player].batData.dotF = true;
 	}
 	attackDelay () {
-		player1.batData.active = false;
+		game.players[this.player].batData.active = false;
 
-		if (!player1.batData.lastAttackHit) {
-			player1.batData.delay = player1.batData.delay + player1.batData.minDelayMiss + Math.floor(Math.random()*(player1.batData.maxDelayMiss - player1.batData.minDelayMiss));
+		if (!game.players[this.player].batData.lastAttackHit) {
+			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayMiss + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayMiss - game.players[this.player].batData.minDelayMiss));
 		} else {
-			player1.batData.delay = player1.batData.delay + player1.batData.minDelayHit + Math.floor(Math.random()*(player1.batData.maxDelayHit - player1.batData.minDelayHit));
+			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayHit + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayHit - game.players[this.player].batData.minDelayHit));
 		}
 
-		if (player1.batData.delay > player1.batData.maxDelay) {
-			player1.batData.delay = player1.batData.maxDelay;
+		if (game.players[this.player].batData.delay > game.players[this.player].batData.maxDelay) {
+			game.players[this.player].batData.delay = game.players[this.player].batData.maxDelay;
 		}
 
-		player1.batData.delayHandle = setInterval(()=>{
-			if (player1.batData.delay > 0) {
-				player1.batData.delay--;
+		game.players[this.player].batData.delayHandle = setInterval(()=>{
+			if (game.players[this.player].batData.delay > 0) {
+				game.players[this.player].batData.delay--;
 				this.eraseDDot();
 			} else {
-				clearInterval(player1.batData.delayHandle);
-//				player1.dealDamage();  // NOTE: ****************
+				clearInterval(game.players[this.player].batData.delayHandle);
+//				game.players[this.player].dealDamage();  // NOTE: ****************
 				this.reset();
 			}
 		}, 500);
@@ -129,258 +182,133 @@ class BattleBar {
 		const leftLim = this.hitBox.x; 
 		const rightLim = this.hitBox.x + this.hitBox.width;
 		
-		player1.batData.lastAttackHit = false;
-		player1.batData.pHit = false;
+		game.players[this.player].batData.lastAttackHit = false;
+		game.players[this.player].batData.pHit = false;
 
-		if (player1.batData.dotF) {
+		if (game.players[this.player].batData.dotF) {
 			if (this.attackDot.x + this.attackDot.r <= rightLim && this.attackDot.x - this.attackDot.r >= leftLim) {
-				message1.textContent = "PERFECT HIT!";
-				player1.batData.lastAttackHit = true;
-				player1.batData.pHit = true;
-				player1.batData.damage = (player1.doodle.strength + (player1.batData.speed * 2)) * 2;
+				game.players[this.player].messageElem.textContent = "PERFECT HIT!";
+				game.players[this.player].batData.lastAttackHit = true;
+				game.players[this.player].batData.pHit = true;
+				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (game.players[this.player].batData.speed * 2)) * 2;
 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-				message1.textContent = "HIT!";
-				player1.batData.lastAttackHit = true;
-				player1.batData.damage = (player1.doodle.strength + (this.speed * 2));
+				game.players[this.player].messageElem.textContent = "HIT!";
+				game.players[this.player].batData.lastAttackHit = true;
+				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (this.speed * 2));
 			}
 		}
-		if (!player1.batData.dotF) {
+		if (!game.players[this.player].batData.dotF) {
 			if (this.attackDot.x - this.attackDot.r >= leftLim && this.attackDot.x + this.attackDot.r <= rightLim) {
-				message1.textContent = "PERFECT HIT!";
-				player1.batData.lastAttackHit = true;
-				player1.batData.pHit = true;
-				player1.batData.damage = (player1.doodle.strength + (this.speed * 2)) * 2;
+				game.players[this.player].messageElem.textContent = "PERFECT HIT!";
+				game.players[this.player].batData.lastAttackHit = true;
+				game.players[this.player].batData.pHit = true;
+				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (this.speed * 2)) * 2;
 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-				message1.textContent = "HIT!";
-				player1.batData.lastAttackHit = true;
-				player1.batData.damage = (player1.doodle.strength + (player1.batData.speed * 2));
+				game.players[this.player].messageElem.textContent = "HIT!";
+				game.players[this.player].batData.lastAttackHit = true;
+				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (game.players[this.player].batData.speed * 2));
 			}
 		}
 
-		if (!player1.batData.lastAttackHit) {
+		if (!game.players[this.player].batData.lastAttackHit) {
 			message1.textContent = "MISS!";
-			player1.batData.damage = 0;
+			game.players[this.player].batData.damage = 0;
 		}
 	}
 }
 
 
-const player1 = {
-	lives: 0,
-	doodle: {
-		name: "SNAKE-ISH",
-		id: "snake-ish",
-		maxHealth: 50,
-		strength: 2,
-		blockHurt: 2,
-		setSpecial () { },
-		clearSpecial () { },
-		natFacingRight: false,
-		src: "images/snake-ish.png",
-		attackAnimation () { },		
-	},
-	startingDoodles: [],
-	batData: {
-		attacking: false,
-		beingAttacked: false,
-		blockFlag: true,
-		damage: 0,
-		pHit: false,
-		delayHandle: null,
-		delay: 0,
-		maxDelay: 10,
-		delayPenalty: 2,
-		minDelayHit: 2,
-		maxDelayHit: 4,
-		minDelayMiss: 2,
-		maxDelayMiss: 6,
-		lastAttackHit: true,
-		active: false,
-		width: canvasBB1.width,
-		height: canvasBB1.height,
-		hitW: 20,
-		dotR: 7,
-		dotMoving: false,
-		dotF: true,
-		aniHandle: null,
-		aniX: 0,
-		minSpeed: 5,
-		maxSpeed: 8,
-		speed: 1,
-		x: 0,
-		y: 0,
-		color: "white"
+const game = {
+	canHeight: 40,
+	canWidth: 200,
+	totPlayers: 0,
+	players: [null],
+	checkBlock () {
+		this.players.forEach( (elem)=> {
+			if (elem) {
+				if (!elem.batData.attacking && elem.batData.beingAttacked) {
+					elem.batData.block = true;
+				} else {
+					elem.batData.block = false;
+				}
+			}
+		})
 	}
 }
 
 
-// const battleBar = {
-// 	setHitBox () {
-// 		this.hitBox.x = (player1.batData.width/2) - (player1.batData.hitW/2);
-// 		this.hitBox.y = 0; 
-// 		this.hitBox.width = player1.batData.hitW;
-// 		this.hitBox.height = player1.batData.height;
-// 		this.hitBox.color = "red";
-// 	},
-// 	setAttackDot () {
-// 		this.attackDot.x = player1.batData.dotR;
-// 		this.attackDot.y = player1.batData.height/2; 
-// 		this.attackDot.r = player1.batData.dotR;
-// 	},
-// 	drawBBar () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.rect(player1.batData.x, player1.batData.y, player1.batData.width, player1.batData.height);
-// 		ctxBB1.fillStyle = player1.batData.color;
-// 		ctxBB1.fill();
-// 	},
-// 	drawHBox () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-// 		ctxBB1.fillStyle = this.hitBox.color;
-// 		ctxBB1.fill();
-// 	},
-// 	drawADot () {
-// 		ctxBB1.beginPath();
-// 		ctxBB1.arc(this.attackDot.x, this.attackDot.y, this.attackDot.r, 0, 2*Math.PI);
-// 		ctxBB1.fillStyle = "black";
-// 		ctxBB1.fill();
-// 	},
-// 	erase () {
-// 		ctxBB1.clearRect(0, 0, player1.batData.width, player1.batData.height);
-// 	},
-// 	eraseDDot () {
-// 		this.erase();
-// 		this.drawBBar();
-// 		this.drawHBox();
-// 	},
-// 	checkDotDirection () {
-// 		if (player1.batData.aniX >= (player1.batData.width - (this.attackDot.r*2))) {	
-
-// 			player1.batData.aniX = 0;
-
-// 			if (player1.batData.dotF) {
-// 				player1.batData.dotF = false;
-// 			} else {
-// 				player1.batData.dotF = true;
-// 			}
-// 		}
-// 	},
-// 	moveDot () {
-// 		this.erase();
-// 		this.drawBBar();
-// 		this.drawHBox();
-// 		if (player1.batData.dotF) {
-// 			this.attackDot.x += player1.batData.speed;
-// 		} else {
-// 			this.attackDot.x -= player1.batData.speed;
-// 		}
-// 		this.drawADot();
-// 	},
-// 	setSpeed () {
-// 		const newSpeedMod = Math.floor(Math.random()*(player1.batData.maxSpeed - player1.batData.minSpeed + 1));
-// 		player1.batData.speed = player1.batData.minSpeed + newSpeedMod;
-// 	},
-// 	reset () {
-// 	 	this.erase();
-// 		player1.batData.delay = 0;
-// 		player1.batData.active = true;
-// 		player1.batData.aniX = 0;
-// 		this.attackDot.x = player1.batData.dotR;
-// 		this.setSpeed();
-// 		this.drawBBar();
-// 		this.drawHBox();
-// 		this.drawADot();
-// 		player1.batData.dotMoving = true;
-// 		player1.batData.dotF = true;
-// 	},
-// 	attackDelay () {
-// 		player1.batData.active = false;
-
-// 		if (!player1.batData.lastAttackHit) {
-// 			player1.batData.delay = player1.batData.delay + player1.batData.minDelayMiss + Math.floor(Math.random()*(player1.batData.maxDelayMiss - player1.batData.minDelayMiss));
-// 		} else {
-// 			player1.batData.delay = player1.batData.delay + player1.batData.minDelayHit + Math.floor(Math.random()*(player1.batData.maxDelayHit - player1.batData.minDelayHit));
-// 		}
-
-// 		if (player1.batData.delay > player1.batData.maxDelay) {
-// 			player1.batData.delay = player1.batData.maxDelay;
-// 		}
-
-// 		player1.batData.delayHandle = setInterval(()=>{
-// 			if (player1.batData.delay > 0) {
-// 				player1.batData.delay--;
-// 				this.eraseDDot();
-// 			} else {
-// 				clearInterval(player1.batData.delayHandle);
-// //				player1.dealDamage();  // NOTE: ****************
-// 				this.reset();
-// 			}
-// 		}, 500);
-// 	},
-// 	checkHit () { 
-// 		const leftLim = this.hitBox.x; 
-// 		const rightLim = this.hitBox.x + this.hitBox.width;
-		
-// 		player1.batData.lastAttackHit = false;
-// 		player1.batData.pHit = false;
-
-// 		if (player1.batData.dotF) {
-// 			if (this.attackDot.x + this.attackDot.r <= rightLim && this.attackDot.x - this.attackDot.r >= leftLim) {
-// 				message1.textContent = "PERFECT HIT!";
-// 				player1.batData.lastAttackHit = true;
-// 				player1.batData.pHit = true;
-// 				player1.batData.damage = (player1.doodle.strength + (player1.batData.speed * 2)) * 2;
-// 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-// 				message1.textContent = "HIT!";
-// 				player1.batData.lastAttackHit = true;
-// 				player1.batData.damage = (player1.doodle.strength + (this.speed * 2));
-// 			}
-// 		}
-// 		if (!player1.batData.dotF) {
-// 			if (this.attackDot.x - this.attackDot.r >= leftLim && this.attackDot.x + this.attackDot.r <= rightLim) {
-// 				message1.textContent = "PERFECT HIT!";
-// 				player1.batData.lastAttackHit = true;
-// 				player1.batData.pHit = true;
-// 				player1.batData.damage = (player1.doodle.strength + (this.speed * 2)) * 2;
-// 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-// 				message1.textContent = "HIT!";
-// 				player1.batData.lastAttackHit = true;
-// 				player1.batData.damage = (player1.doodle.strength + (player1.batData.speed * 2));
-// 			}
-// 		}
-
-// 		if (!player1.batData.lastAttackHit) {
-// 			message1.textContent = "MISS!";
-// 			player1.batData.damage = 0;
-// 		}
-// 	}
-// }
-
-const battleBar = new BattleBar (1);
-
+const battleBars = [null];
 
 let globalAniHandle = null;
 
-function animateBlock () {
-		if (player1.block && !player1.attacking) {
-			block1.style.visibility = "visible";
-		} else {
-			block1.style.visibility = "hidden";
-		}
 
-		// if (player2.block && !player2.attacking) {
-		// 	block2.style.visibility = "visible";
-		// } else {
-		// 	block2.style.visibility = "hidden";
-		// }
+
+function setBattleBars (totPlayers) {
+	for (let i = 1; i <= totPlayers; i++) {
+		const newBattleBar = new BattleBar(i);
+		battleBars.push(newBattleBar);
+	}
+}
+
+
+
+function setPlayerElements () {
+	game.players.forEach( (elem, player) =>{ 
+		if (elem) {
+			elem.canvas = document.getElementById("battle-bar-" + player);
+			elem.ctx = elem.canvas.getContext("2d");
+			elem.messageElem = document.getElementById("message-" + player);
+			elem.healthElem = document.getElementById("health-" + player);
+			elem.blockElem = document.getElementById("block-" + player);
+		}
+	})
+}
+
+
+function setPlayers (totPlayers) {
+	for (let i = 1; i <= totPlayers; i++) {
+		const newPlayer = new Player(i);
+		game.players.push(newPlayer);
+	}
+}
+
+function animateBlock () {
+
+	game.checkBlock();
+
+	game.players.forEach( (elem) => {
+		if (elem) {
+			if (elem.batData.block) {
+				elem.blockElem.style.visibility = "visible";
+			} else {
+				elem.blockElem.style.visibility = "hidden";
+			}
+		}
+	})
+
+	// if (game.players[1].batData.block) {
+	// 	block1.style.visibility = "visible";
+	// } else {
+	// 	block1.style.visibility = "hidden";
+	// }
+
+	// if (game.players[2].batData.block) {
+	// 	block2.style.visibility = "visible";
+	// } else {
+	// 	block2.style.visibility = "hidden";
+	// }
 }
 
 function animateDot () {
-	if (player1.batData.active) {
-		player1.batData.aniX += player1.batData.speed;
-		battleBar.checkDotDirection();
-		battleBar.moveDot();
-	}
+	battleBars.forEach( (elem, player) => {
+		if (elem) {
+			if (game.players[player].batData.active) {
+				game.players[player].batData.aniX += game.players[player].batData.speed;
+				elem.checkDotDirection();
+				elem.moveDot();
+			}
+		}
+	})
 }
 
 
@@ -395,14 +323,20 @@ function stopAnimation () {
 }
 
 function attack () {
-	battleBar.checkHit();
-	battleBar.attackDelay();
+	battleBars[1].checkHit();
+	battleBars[1].attackDelay();
 }
 
-battleBar.setHitBox();
-battleBar.setAttackDot();
-battleBar.reset();
+function getAttacked () {
+	game.players[1].beingAttacked = true;
+}
+
+setPlayers(1);
+setPlayerElements();
+setBattleBars(1);
+
+battleBars[1].setHitBox();
+battleBars[1].setAttackDot();
+battleBars[1].reset();
 
 startAnimation();
-
-
