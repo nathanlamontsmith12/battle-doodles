@@ -1,43 +1,21 @@
 console.log("DOODLE BATTLE");
 
-// DONE: 
-// 1.) display and update player's lives;
-// 2.) add game logic to check health / deduct lives / get new doodle 
-// 3.) add game logic for game over / rematch 
-// 4.) Make block functionality modular -- and shorten the "block window" ? *** 
-// 5.) Can't block while attacking (and block reduces damage TO half, rounded down?)
-
-// CHANGE OF PLAN: block reduces damage to half, and cannot block while attacking -- 
-// this makes the block window more dynamic and nerfs blocking enough. ---> DONE! 
-
-// CHANGE OF PLAN: The much more elegant solution -- blockHurt! 
-
-// --------------
-// CURRENT TASKS: 
-//	Selectable;
-//	DRY;
-// 	Differentiation + special abilities!!  
-// --------------
-
 // TO DO: 
-// 6.) Special abilities -- strength + weakness for each 
-// 7.) Allow players to set advantage / disadvantage   
-// 8.) Players select 2 doodles (1 PL first, 2 PL x2, 1 PL last); no mirror matches (?)
-// 9.) UI -- make it good! 
-// 10.) At least ten selectable doodles!! 
-// 11.) Playtest and balance the doodles 
-// 12.) basic animations 
+// 1.) Rules added 
+// 2.) Special abilities -- strength + weakness for each 
+// 3.) Playtest / balance the doodles 
+// 4.) Basic animations 
+// 5.) Tweak UI and battle display 
+// 6.) Allow players to set advantage / disadvantage   
 
 // ------------------------
 
 // 13.) basic sound effects 
 // 14.) music 
-// 15.) complex animations (special attacks?)
-// 16.) single-player mode  
+// 15.) single-player mode 
+// 16.) more complex animations 
 
 
-
-// ****** NOTE: "blocking mode" ********* 
 
 const doodleArray = [];
 
@@ -78,8 +56,9 @@ class Doodle {
 const game = {
 	playerSelection: 1,
 	totLives: 3,
-	totPlayers: 0,
-	blockAniHandle: null,
+	totPlayers: 2,
+	// blockAniHandle: null,
+	// globalAniHandle: null,
 	selections: [],
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
@@ -505,19 +484,22 @@ function display () {
 	console.log(player2);
 }
 
-function animateBlock () {
+// function animateBlock () {
 
-	if (player1.block && !player1.attacking) {
-		block1.style.visibility = "visible";
-	} else {
-		block1.style.visibility = "hidden";
-	}
+// 	if (player1.block && !player1.attacking) {
+// 		block1.style.visibility = "visible";
+// 	} else {
+// 		block1.style.visibility = "hidden";
+// 	}
 
-	if (player2.block && !player2.attacking) {
-		block2.style.visibility = "visible";
-	} else {
-		block2.style.visibility = "hidden";
-	}
+// 	if (player2.block && !player2.attacking) {
+// 		block2.style.visibility = "visible";
+// 	} else {
+// 		block2.style.visibility = "hidden";
+// 	}
 
-	game.blockAniHandle = window.requestAnimationFrame(animateBlock);
-}
+// 	game.blockAniHandle = window.requestAnimationFrame(animateBlock);
+// }
+
+
+

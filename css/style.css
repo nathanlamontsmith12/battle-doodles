@@ -131,7 +131,8 @@ body {
 #arena {
 	margin: 5px;
 	height: 90vh;
-	display: none; 
+	display: flex;  
+	/* CHANGE ABOVE DISPLAY BACK TO NONE AFTER REFACTORING!*/
 	min-height: 550px;
 	min-width: 750px;
 	justify-content: space-between;
