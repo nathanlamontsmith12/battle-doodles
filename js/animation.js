@@ -1,3 +1,28 @@
+const moreAnimations = {
+	displayHealth () {
+		health1.textContent = this.doodle.health.toString();
+		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+		hBarPerc = hBarPerc.toString();
+		document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
+	},
+	updateSelectionDisplay () {
+		this.startingDoodles.forEach( (elem, index) => {
+			const location = document.getElementById(`p1-selection-${index + 1}`);
+			const picToPlace = document.createElement("IMG");
+			const doodlePicInd = parseInt(elem);
+			picToPlace.src = doodleLibrary[doodlePicInd].src;
+			picToPlace.classList.add("miniSelDisp");
+			location.appendChild(picToPlace);
+		});	
+	},
+	displayLives() {
+		document.getElementById("player-1-lives").textContent = this.lives.toString();
+	},
+}
+
+
+
+
 let globalAniHandle = null;
 
 function animateBlock () {

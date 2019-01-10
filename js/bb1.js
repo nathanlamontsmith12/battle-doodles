@@ -7,23 +7,44 @@ console.log("Battle Bar 1 Linked");
 // const block1 = document.getElementById("block-1");
 
 
+class Doodle {
+	constructor (player, doodle) {
+		this.player = player;
+		this.name = doodle.name;
+		this.health = doodle.maxHealth;
+		this.maxHealth = doodle.maxHealth;
+		this.src = doodle.src;
+		this.strength = doodle.strength;
+		this.setSpecial = doodle.setSpecial;
+		this.clearSpecial = doodle.clearSpecial;
+		this.blockHurt = doodle.blockHurt;
+		this.attackAnimation = doodle.attackAnimation; 
+		this.blockMod = 2;
+	}
+	draw () {
+		const image = document.createElement("IMG");
+		image.src = this.src;
+		const location = document.getElementById("doodle-" + this.player.toString());
+		location.appendChild(image);
+	}
+	erase () {
+		const imageToErase = document.querySelector(`#doodle-${this.player} img`);
+		document.getElementById("doodle-" + this.player).removeChild(imageToErase);
+	}
+	hitAnimation () {
+		// when doodle takes damage, jiggle-shock the display based on the amount of damage taken 
+	}
+}
+
 
 class Player {
-	constructor (player) {
+	constructor (player, attackKey, blockKey) {
 		this.player = player;
+		this.attackKey = attackKey,
+		this.blockKey = blockKey,
+		this.currentEnemy = null;
 		this.lives = 0;
-		this.doodle = {
-			name: "SNAKE-ISH",
-			id: "snake-ish",
-			maxHealth: 50,
-			strength: 2,
-			blockHurt: 2,
-			setSpecial () { },
-			clearSpecial () { },
-			natFacingRight: false,
-			src: "images/snake-ish.png",
-			attackAnimation () { },		
-		};
+		this.doodle = {};
 		this.startingDoodles = [];
 		this.batData = {
 			attacking: false,
@@ -57,6 +78,42 @@ class Player {
 			y: 0,
 			color: "white"
 		};
+	}
+	getDoodle () {
+		this.doodle = new Doodle (this.player.toString(), doodleLibrary[this.startingDoodles[0]]);
+		this.startingDoodles.shift();
+		this.doodle.setSpecial();
+//		this.displayHealth();
+	}
+	doodleKO () {
+		this.doodle.clearSpecial();
+		this.doodle.erase();
+		// const dPImages = document.querySelectorAll("#player-1-s-display .miniSelDisp");
+		// dPImages[0].remove();
+		this.getDoodle();
+		this.doodle.draw();
+	}
+	keypress (evt) {
+
+		if (this.batData.active) {
+			if (this.batData.dotMoving && !this.batData.attacking) {
+				if (evt.key === this.attackKey) {
+					this.batData.attacking = true;
+					this.batData.dotMoving = false; 
+					battle.battleBars[this.player].checkHit();
+					battle.inputAttackFrom(this.player);
+					battle.battleBars[this.player].attackDelay();
+				}
+			}
+		}
+		if (evt.key === this.blockKey) {
+			if (this.batData.block && this.batData.blockFlag) {
+				battle.inputBlockFrom(this.player, true);
+				this.batData.block = false;
+				return;
+			}
+			battle.inputBlockFrom(this.player, false);
+		}
 	}
 }
 
@@ -173,7 +230,7 @@ class BattleBar {
 				this.eraseDDot();
 			} else {
 				clearInterval(game.players[this.player].batData.delayHandle);
-//				game.players[this.player].dealDamage();  // NOTE: ****************
+				battle.dealDamage(this.player); 
 				this.reset();
 			}
 		}, 500);
@@ -211,7 +268,7 @@ class BattleBar {
 		}
 
 		if (!game.players[this.player].batData.lastAttackHit) {
-			message1.textContent = "MISS!";
+			game.players[this.player].messageElem.textContent = "MISS!";
 			game.players[this.player].batData.damage = 0;
 		}
 	}
@@ -219,6 +276,10 @@ class BattleBar {
 
 
 const game = {
+	playerSelection: 1,
+	totLives: 3,
+	totPlayers: 1,
+	selections: [],
 	canHeight: 40,
 	canWidth: 200,
 	totPlayers: 0,
@@ -226,7 +287,7 @@ const game = {
 	checkBlock () {
 		this.players.forEach( (elem)=> {
 			if (elem) {
-				if (!elem.batData.attacking && elem.batData.beingAttacked) {
+				if (!elem.batData.attacking && elem.batData.beingAttacked && elem.batData.blockFlag) {
 					elem.batData.block = true;
 				} else {
 					elem.batData.block = false;
@@ -237,16 +298,70 @@ const game = {
 }
 
 
-const battleBars = [null];
+const battle = {
+	battleBars: [null],
+	checkHealth () {
+		if (this.doodle.health <= 0) {
+			this.lives--;
+			this.displayLives();
+			if (this.lives > 0) {
+				this.doodleKO();
+			}
+		}
+	},
+	checkLives () {
+		if (this.lives <= 0) {
+			alert("Player 2 Wins!");
+			location.reload();
+		}
+	},
+	dealDamage () {
+		// this.attacking = false;
+		// player2.block = false;
+		// player2.doodle.health = player2.doodle.health -= batBData1.damage;
+		// player2.displayHealth();
+		// player2.checkHealth();
+		// player2.checkLives();
+	},
+	inputAttackFrom (player) {
+		console.log("Attack from Player " + player + "against Player " + game.players[player].currentEnemy.toString());
+	},
+	inputBlockFrom (player, goodBlock) {
+		if (goodBlock) {
+			console.log("Good block from Player " + player);
+		} else {
+			console.log("Bad block from Player " + player);
+		}
+	}
+}
 
-let globalAniHandle = null;
-
+const display = {
+	// health () {
+	// 	health1.textContent = this.doodle.health.toString();
+	// 	let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+	// 	hBarPerc = hBarPerc.toString();
+	// 	document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
+	// },
+	// selectionDisplay () {
+	// 	this.startingDoodles.forEach( (elem, index) => {
+	// 		const location = document.getElementById(`p1-selection-${index + 1}`);
+	// 		const picToPlace = document.createElement("IMG");
+	// 		const doodlePicInd = parseInt(elem);
+	// 		picToPlace.src = doodleLibrary[doodlePicInd].src;
+	// 		picToPlace.classList.add("miniSelDisp");
+	// 		location.appendChild(picToPlace);
+	// 	});	
+	// },
+	// displayLives() {
+	// 	document.getElementById("player-1-lives").textContent = this.lives.toString();
+	// },
+}
 
 
 function setBattleBars (totPlayers) {
 	for (let i = 1; i <= totPlayers; i++) {
 		const newBattleBar = new BattleBar(i);
-		battleBars.push(newBattleBar);
+		battle.battleBars.push(newBattleBar);
 	}
 }
 
@@ -265,11 +380,22 @@ function setPlayerElements () {
 }
 
 
-function setPlayers (totPlayers) {
-	for (let i = 1; i <= totPlayers; i++) {
-		const newPlayer = new Player(i);
+function setPlayer (playerNum, attackKey, blockKey) {
+		const newPlayer = new Player(playerNum, attackKey, blockKey);
 		game.players.push(newPlayer);
-	}
+}
+
+function setEnemies () {
+	game.players.forEach( (elem, player)=> {
+		if (elem) {
+			if (player === 1) {
+				elem.currentEnemy = 2;
+			}
+			if (player === 2) {
+				elem.currentEnemy = 1;
+			}
+		}
+	})
 }
 
 function animateBlock () {
@@ -285,22 +411,10 @@ function animateBlock () {
 			}
 		}
 	})
-
-	// if (game.players[1].batData.block) {
-	// 	block1.style.visibility = "visible";
-	// } else {
-	// 	block1.style.visibility = "hidden";
-	// }
-
-	// if (game.players[2].batData.block) {
-	// 	block2.style.visibility = "visible";
-	// } else {
-	// 	block2.style.visibility = "hidden";
-	// }
 }
 
 function animateDot () {
-	battleBars.forEach( (elem, player) => {
+	battle.battleBars.forEach( (elem, player) => {
 		if (elem) {
 			if (game.players[player].batData.active) {
 				game.players[player].batData.aniX += game.players[player].batData.speed;
@@ -312,31 +426,47 @@ function animateDot () {
 }
 
 
+function init () {
+	setPlayer(1, "a", "d");
+	setEnemies();
+	setPlayerElements();
+	setBattleBars(1);
+
+	battle.battleBars[1].setHitBox();
+	battle.battleBars[1].setAttackDot();
+	battle.battleBars[1].reset();
+}
+
+
 function startAnimation () {
 	animateBlock();
 	animateDot();
-	globalAniHandle = window.requestAnimationFrame(startAnimation);
+	game.globalAniHandle = window.requestAnimationFrame(startAnimation);
 }
 
 function stopAnimation () {
 	cancelAnimationFrame(animation.globalAniHandle);
 }
 
+
+
+
 function attack () {
-	battleBars[1].checkHit();
-	battleBars[1].attackDelay();
+	battle.battleBars[1].checkHit();
+	battle.battleBars[1].attackDelay();
 }
 
 function getAttacked () {
 	game.players[1].beingAttacked = true;
 }
 
-setPlayers(1);
-setPlayerElements();
-setBattleBars(1);
+init();
 
-battleBars[1].setHitBox();
-battleBars[1].setAttackDot();
-battleBars[1].reset();
 
-startAnimation();
+document.addEventListener("keypress", (evt) => {
+	game.players.forEach( (elem) => {
+		if (elem) {
+			elem.keypress(evt);
+		}
+	})
+})
