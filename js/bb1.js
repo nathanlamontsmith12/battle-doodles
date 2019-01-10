@@ -1,11 +1,6 @@
 console.log("Battle Bar 1 Linked");
 
-// const canvasBB1 = document.getElementById("battle-bar-1");
-// const ctxBB1 = canvasBB1.getContext("2d");
-// const message1 = document.getElementById("message-1");
-// const health1 = document.getElementById("health-1");
-// const block1 = document.getElementById("block-1");
-
+const doodleArray = [];
 
 class Doodle {
 	constructor (player, doodle) {
@@ -83,16 +78,35 @@ class Player {
 		this.doodle = new Doodle (this.player.toString(), doodleLibrary[this.startingDoodles[0]]);
 		this.startingDoodles.shift();
 		this.doodle.setSpecial();
-//		this.displayHealth();
+		this.displayHealth();
 	}
 	doodleKO () {
 		this.doodle.clearSpecial();
 		this.doodle.erase();
-		// const dPImages = document.querySelectorAll("#player-1-s-display .miniSelDisp");
-		// dPImages[0].remove();
+		const dPImages = document.querySelectorAll(`#player-${this.player}-s-display .miniSelDisp`);
+		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
 	}
+	displayHealth () {
+		this.healthElem.textContent = this.doodle.health.toString();
+		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+		hBarPerc = hBarPerc.toString();
+		document.getElementById(`p${this.player}-health-remaining`).style.width = `${hBarPerc}%`;
+	},
+	selectionDisplay () {
+		this.startingDoodles.forEach( (elem, index) => {
+			const location = document.getElementById(`p${this.player}-selection-${index + 1}`);
+			const picToPlace = document.createElement("IMG");
+			const doodlePicInd = parseInt(elem);
+			picToPlace.src = doodleLibrary[doodlePicInd].src;
+			picToPlace.classList.add("miniSelDisp");
+			location.appendChild(picToPlace);
+		});	
+	},
+	displayLives() {
+		document.getElementById(`player-${this.player}-lives`).textContent = this.lives.toString();
+	},
 	keypress (evt) {
 
 		if (this.batData.active) {
@@ -100,16 +114,13 @@ class Player {
 				if (evt.key === this.attackKey) {
 					this.batData.attacking = true;
 					this.batData.dotMoving = false; 
-					battle.battleBars[this.player].checkHit();
 					battle.inputAttackFrom(this.player);
-					battle.battleBars[this.player].attackDelay();
 				}
 			}
 		}
 		if (evt.key === this.blockKey) {
 			if (this.batData.block && this.batData.blockFlag) {
 				battle.inputBlockFrom(this.player, true);
-				this.batData.block = false;
 				return;
 			}
 			battle.inputBlockFrom(this.player, false);
@@ -211,9 +222,8 @@ class BattleBar {
 		game.players[this.player].batData.dotMoving = true;
 		game.players[this.player].batData.dotF = true;
 	}
-	attackDelay () {
+	attackDelay (attackedPlayer) {
 		game.players[this.player].batData.active = false;
-
 		if (!game.players[this.player].batData.lastAttackHit) {
 			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayMiss + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayMiss - game.players[this.player].batData.minDelayMiss));
 		} else {
@@ -230,7 +240,7 @@ class BattleBar {
 				this.eraseDDot();
 			} else {
 				clearInterval(game.players[this.player].batData.delayHandle);
-				battle.dealDamage(this.player); 
+				battle.dealDamage(game.players[this.player].batData.damage, this.player, attackedPlayer); 
 				this.reset();
 			}
 		}, 500);
@@ -278,11 +288,10 @@ class BattleBar {
 const game = {
 	playerSelection: 1,
 	totLives: 3,
-	totPlayers: 1,
+	totPlayers: 2,
 	selections: [],
 	canHeight: 40,
 	canWidth: 200,
-	totPlayers: 0,
 	players: [null],
 	checkBlock () {
 		this.players.forEach( (elem)=> {
@@ -315,48 +324,32 @@ const battle = {
 			location.reload();
 		}
 	},
-	dealDamage () {
-		// this.attacking = false;
-		// player2.block = false;
-		// player2.doodle.health = player2.doodle.health -= batBData1.damage;
-		// player2.displayHealth();
-		// player2.checkHealth();
-		// player2.checkLives();
+	dealDamage (damage, fromPlayer, toPlayer) {
+		game.players[fromPlayer].batData.attacking = false;
+		game.players[toPlayer].beingAttacked = false;
+		if (game.players[toPlayer].batData.blockActive) {
+			game.players[toPlayer].doodle.health -= Math.floor(damage / game.players[toPlayer].doodle.blockMod);
+			game.players[toPlayer].batData.blockActive = false;
+		} else {
+			game.players[toPlayer].doodle.health -= damage;
+		}
 	},
 	inputAttackFrom (player) {
-		console.log("Attack from Player " + player + "against Player " + game.players[player].currentEnemy.toString());
+		game.players[player].batData.attacking = true;
+		const attackTarget = game.players[player].currentEnemy;
+		game.players[attackTarget].batData.beingAttacked = true;
+		battle.battleBars[player].checkHit();
+		battle.battleBars[player].attackDelay(attackTarget);
 	},
 	inputBlockFrom (player, goodBlock) {
 		if (goodBlock) {
-			console.log("Good block from Player " + player);
+			game.players[player].blockActive = true;
+			game.players[player].batData.block = false; 
 		} else {
-			console.log("Bad block from Player " + player);
+			game.players[player].doodle.health -= game.players[player].doodle.blockHurt;
 		}
 	}
 }
-
-const display = {
-	// health () {
-	// 	health1.textContent = this.doodle.health.toString();
-	// 	let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
-	// 	hBarPerc = hBarPerc.toString();
-	// 	document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
-	// },
-	// selectionDisplay () {
-	// 	this.startingDoodles.forEach( (elem, index) => {
-	// 		const location = document.getElementById(`p1-selection-${index + 1}`);
-	// 		const picToPlace = document.createElement("IMG");
-	// 		const doodlePicInd = parseInt(elem);
-	// 		picToPlace.src = doodleLibrary[doodlePicInd].src;
-	// 		picToPlace.classList.add("miniSelDisp");
-	// 		location.appendChild(picToPlace);
-	// 	});	
-	// },
-	// displayLives() {
-	// 	document.getElementById("player-1-lives").textContent = this.lives.toString();
-	// },
-}
-
 
 function setBattleBars (totPlayers) {
 	for (let i = 1; i <= totPlayers; i++) {
@@ -365,25 +358,23 @@ function setBattleBars (totPlayers) {
 	}
 }
 
-
-
-function setPlayerElements () {
-	game.players.forEach( (elem, player) =>{ 
-		if (elem) {
-			elem.canvas = document.getElementById("battle-bar-" + player);
-			elem.ctx = elem.canvas.getContext("2d");
-			elem.messageElem = document.getElementById("message-" + player);
-			elem.healthElem = document.getElementById("health-" + player);
-			elem.blockElem = document.getElementById("block-" + player);
-		}
-	})
-}
-
-
-function setPlayer (playerNum, attackKey, blockKey) {
+function addPlayer (playerNum, attackKey, blockKey) {
 		const newPlayer = new Player(playerNum, attackKey, blockKey);
 		game.players.push(newPlayer);
 }
+
+function setPlayerElements (totPlayers) {
+	for (let i = 1; i <= totPlayers; i++) {
+		console.log("setting player elements for player " + i)
+		const currentPlayer = game.players[i];
+		currentPlayer.canvas = document.getElementById("battle-bar-" + i);
+		currentPlayer.ctx = currentPlayer.canvas.getContext("2d");
+		currentPlayer.messageElem = document.getElementById("message-" + i);
+		currentPlayer.healthElem = document.getElementById("health-" + i);
+		currentPlayer.blockElem = document.getElementById("block-" + i);
+	}
+}
+
 
 function setEnemies () {
 	game.players.forEach( (elem, player)=> {
@@ -427,14 +418,20 @@ function animateDot () {
 
 
 function init () {
-	setPlayer(1, "a", "d");
+	addPlayer(1, "a", "d");
+	addPlayer(2, "j", "l");
 	setEnemies();
-	setPlayerElements();
-	setBattleBars(1);
+	setPlayerElements(game.totPlayers);
+	setBattleBars(2);
 
 	battle.battleBars[1].setHitBox();
+	battle.battleBars[2].setHitBox();
+
 	battle.battleBars[1].setAttackDot();
+	battle.battleBars[2].setAttackDot();
+
 	battle.battleBars[1].reset();
+	battle.battleBars[2].reset();	
 }
 
 
@@ -449,16 +446,6 @@ function stopAnimation () {
 }
 
 
-
-
-function attack () {
-	battle.battleBars[1].checkHit();
-	battle.battleBars[1].attackDelay();
-}
-
-function getAttacked () {
-	game.players[1].beingAttacked = true;
-}
 
 init();
 
