@@ -78,7 +78,7 @@ class Player {
 		this.doodle = new Doodle (this.player, doodleLibrary[this.startingDoodles[0]]);
 		this.startingDoodles.shift();
 		this.doodle.setSpecial();
-		this.displayHealth();
+		this.checkHealth();
 	}
 	doodleKO () {
 		this.doodle.clearSpecial();
@@ -89,6 +89,7 @@ class Player {
 		this.doodle.draw();
 	}	
 	checkHealth () {
+		this.displayHealth();
 		if (this.doodle.health <= 0) {
 			this.lives--;
 			this.displayLives();
@@ -96,10 +97,11 @@ class Player {
 				this.doodleKO();
 			}
 		}
+		this.displayHealth();
 	}
 	checkLives () {
 		if (this.lives <= 0) {
-			alert("Player 2 Wins!");
+			alert(`Player ${this.currentEnemy} Wins!`);
 			location.reload();
 		}
 	}
@@ -440,8 +442,6 @@ const battle = {
 		} else {
 			game.players[toPlayer].doodle.health -= damage;
 		}
-		console.log("Player " + fromPlayer + " has done " + damage + " damage to Player " + toPlayer);  // REMOVE LATER
-		console.log("Player " + toPlayer + " is at " + game.players[toPlayer].doodle.health + " health"); // REMOVE LATER
 	},
 	inputAttackFrom (player) {
 		game.players[player].batData.attacking = true;
@@ -642,6 +642,12 @@ function animateDot () {
 function startAnimation () {
 	animateBlock();
 	animateDot();
+	game.players.forEach( (elem) => {
+		if (elem) {
+			elem.checkHealth();
+			elem.checkLives();
+		}
+	});
 	game.globalAniHandle = window.requestAnimationFrame(startAnimation);
 }
 
