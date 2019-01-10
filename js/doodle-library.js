@@ -4,10 +4,30 @@ const doodleLibrary = [
 	{
 		name: "SNAKE-ISH",
 		id: "snake-ish",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
-		blockHurt: 2,
-		setSpecial () { },
+		blockHurt: 4,
+		specHit: true,
+		setSpecial () {
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			if (cP.batData.lastAttackHit) {
+				if (!cE.doodle.poisoned) {
+					game.poisonCounter = 5;
+					game.pIntHandle = setInterval(()=>{
+						if (game.poisonCounter <= 0) {
+							clearInterval(game.pIntHandle);
+							cE.doodle.poisoned = false;
+						}
+						if (cE.doodle.poisoned) {
+							cE.doodle.health -= 5;
+						}
+						game.poisonCounter--;
+					}, 1500);
+					cE.doodle.poisoned = true;
+				}
+			}
+		},
 		clearSpecial () { },
 		natFacingRight: false,
 		src: "images/snake-ish.png",
@@ -16,10 +36,13 @@ const doodleLibrary = [
 	{
 		name: "WILY WISP", 
 		id: "wily-wisp",	
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
-		blockHurt: 2,
-		setSpecial () { },
+		blockHurt: 2,		
+		specHit: false,
+		setSpecial () { 
+			this.blockMod = 6;
+		},
 		clearSpecial () { },
 		natFacingRight: false,
 		src: "images/wily-wisp.png",
@@ -28,9 +51,10 @@ const doodleLibrary = [
 	{
 		name: "THE BIG NOPE",
 		id: "big-nope",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: false,		
@@ -40,9 +64,10 @@ const doodleLibrary = [
 	{
 		name: "TRIANGLE MAN",
 		id: "triangle-man",		
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: false,		
@@ -52,9 +77,10 @@ const doodleLibrary = [
 	{
 		name: "PARTICLE MAN",
 		id: "particle-man",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: false,
@@ -64,9 +90,10 @@ const doodleLibrary = [
 	{
 		name: "SUAVE BOX",
 		id: "suave-box",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: true,
@@ -76,9 +103,10 @@ const doodleLibrary = [
 	{
 		name: "PROBLEMATIC DOG",
 		id: "problematic-dog",		
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: true,		
@@ -88,21 +116,23 @@ const doodleLibrary = [
 	{
 		name: "WEDGE BUG",
 		id: "wedge-bug",		
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: true,
 		setSpecial () { },
 		clearSpecial () { },
-		natFacingRight: true,		
+		natFacingRight: false,		
 		src: "images/wedge-bug.png",
 		attackAnimation () { },	
 	},
 	{
 		name: "CAT BAT",
 		id: "cat-bat",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: true,
@@ -112,9 +142,10 @@ const doodleLibrary = [
 	{
 		name: "LIL' GUY",
 		id: "lil-guy",
-		maxHealth: 50,
+		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,
+		specHit: false,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: true,

@@ -14,7 +14,9 @@ class Doodle {
 		this.clearSpecial = doodle.clearSpecial;
 		this.blockHurt = doodle.blockHurt;
 		this.attackAnimation = doodle.attackAnimation; 
+		this.specHit = doodle.specHit;
 		this.blockMod = 2;
+		this.poisoned = false;
 	}
 	draw () {
 		const image = document.createElement("IMG");
@@ -86,8 +88,10 @@ class Player {
 		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
-		this.doodle.setSpecial();
-	}	
+		if (!this.doodle.specHit) {
+			this.doodle.setSpecial();
+		}
+	} 
 	checkHealth () {
 		this.displayHealth();
 		if (this.doodle.health <= 0) {
@@ -315,6 +319,8 @@ const game = {
 	canHeight: 40,
 	canWidth: 200,
 	players: [null],
+	poisonCounter: 0,
+	pIntHandle: null,
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
@@ -358,7 +364,9 @@ const game = {
 
 		this.players.forEach((elem)=>{
 			if (elem) {
-				elem.doodle.setSpecial();
+				if (!elem.doodle.specHit) {
+					elem.doodle.setSpecial();
+				}
 			}
 		})
 
@@ -441,6 +449,9 @@ const battle = {
 	dealDamage (damage, fromPlayer, toPlayer) {
 		game.players[fromPlayer].batData.attacking = false;
 		game.players[toPlayer].batData.beingAttacked = false;
+		if (game.players[fromPlayer].doodle.specHit) {
+			game.players[fromPlayer].doodle.setSpecial();
+		}
 		if (game.players[toPlayer].batData.blockActive) {
 			game.players[toPlayer].doodle.health -= Math.floor(damage / game.players[toPlayer].doodle.blockMod);
 			game.players[toPlayer].batData.blockActive = false;
