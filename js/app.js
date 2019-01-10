@@ -77,7 +77,6 @@ class Player {
 	getDoodle () {
 		this.doodle = new Doodle (this.player, doodleLibrary[this.startingDoodles[0]]);
 		this.startingDoodles.shift();
-		this.doodle.setSpecial();
 		this.checkHealth();
 	}
 	doodleKO () {
@@ -87,6 +86,7 @@ class Player {
 		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
+		this.doodle.setSpecial();
 	}	
 	checkHealth () {
 		this.displayHealth();
@@ -356,6 +356,12 @@ const game = {
 			this.setLives(i);
 		}
 
+		this.players.forEach((elem)=>{
+			if (elem) {
+				elem.doodle.setSpecial();
+			}
+		})
+
 		this.setDoodlePool();
 		startAnimation();
 	},
@@ -571,6 +577,7 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 		game.init2();
 	}
 })
+
 
 
 // *** FUNCTIONS *** 
