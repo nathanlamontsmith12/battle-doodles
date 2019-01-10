@@ -5,7 +5,7 @@ const doodleLibrary = [
 		name: "SNAKE-ISH",
 		id: "snake-ish",
 		maxHealth: 100,
-		strength: 2,
+		strength: 4,
 		blockHurt: 4,
 		specHit: true,
 		setSpecial () {
@@ -38,7 +38,7 @@ const doodleLibrary = [
 		id: "wily-wisp",	
 		maxHealth: 100,
 		strength: 2,
-		blockHurt: 2,		
+		blockHurt: 4,		
 		specHit: true,
 		setSpecial () { 
 			const cP = game.players[this.player];
@@ -63,7 +63,7 @@ const doodleLibrary = [
 			const cP = game.players[this.player];
 			const cEInd = cP.currentEnemy;
 			const cE = game.players[cEInd];
-			game.fearCounter = 4000;
+			game.fearCounter = 3000;
 			game.fIntHandle = setInterval( ()=> {
 				game.fearCounter--; 
 				battle.battleBars[game.players[this.player].currentEnemy].reset();
@@ -83,7 +83,7 @@ const doodleLibrary = [
 		name: "TRIANGLE MAN",
 		id: "triangle-man",		
 		maxHealth: 80,
-		strength: 2,
+		strength: 4,
 		blockHurt: 2,
 		specHit: false,
 		setSpecial () {
@@ -99,7 +99,7 @@ const doodleLibrary = [
 		id: "particle-man",
 		maxHealth: 80,
 		strength: 2,
-		blockHurt: 2,
+		blockHurt: 8,
 		specHit: false,
 		setSpecial () { 
 			this.blockMod = 1.5;
@@ -119,20 +119,18 @@ const doodleLibrary = [
 	{
 		name: "SUAVE BOX",
 		id: "suave-box",
-		maxHealth: 150,
-		strength: 8,
-		blockHurt: 2,
+		maxHealth: 120,
+		strength: 6,
+		blockHurt: 4,
 		specHit: false,
 		setSpecial () { 
 			const cP = game.players[this.player];
-			const cEInd = cP.currentEnemy;
-			const cE = game.players[cEInd];
+			const cE = game.players[cP.currentEnemy];
 			cE.doodle.health = Math.floor(cE.doodle.health / 2);
 		},
 		clearSpecial () { 
 			const cP = game.players[this.player];
-			const cEInd = cP.currentEnemy;
-			const cE = game.players[cEInd];
+			const cE = game.players[cP.currentEnemy];
 			cE.doodle.health = Math.floor(cE.doodle.health / 2);
 		},
 		natFacingRight: true,
@@ -171,8 +169,8 @@ const doodleLibrary = [
 		name: "WEDGE BUG",
 		id: "wedge-bug",		
 		maxHealth: 100,
-		strength: 2,
-		blockHurt: 2,
+		strength: 4,
+		blockHurt: 4,
 		specHit: true,
 		setSpecial () { 
 			const cP = game.players[this.player];
@@ -194,12 +192,29 @@ const doodleLibrary = [
 	{
 		name: "CAT BAT",
 		id: "cat-bat",
-		maxHealth: 100,
+		maxHealth: 80,
 		strength: 2,
 		blockHurt: 2,
-		specHit: true,
-		setSpecial () { },
-		clearSpecial () { },
+		specHit: false,
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+
+			cE.batData.minDelayHit = cE.batData.minDelayHit * 3;
+			cE.batData.maxDelayHit = cE.batData.maxDelayHit * 3;
+			cE.batData.minDelayMiss = cE.batData.minDelayMiss * 3;
+			cE.batData.maxDelayMiss = cE.batData.maxDelayMiss * 3; 
+
+		},
+		clearSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+
+			cE.batData.minDelayHit = cE.batData.minDelayHit / 3;
+			cE.batData.maxDelayHit = cE.batData.maxDelayHit / 3;
+			cE.batData.minDelayMiss = cE.batData.minDelayMiss / 3;
+			cE.batData.maxDelayMiss = cE.batData.maxDelayMiss / 3; 
+		},
 		natFacingRight: true,
 		src: "images/cat-bat.png",
 		attackAnimation () { },	
@@ -209,7 +224,7 @@ const doodleLibrary = [
 		id: "lil-guy",
 		maxHealth: 100,
 		strength: 2,
-		blockHurt: 2,
+		blockHurt: 6,
 		specHit: false,
 		setSpecial () { 
 			const cP = game.players[this.player];
