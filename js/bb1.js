@@ -42,7 +42,6 @@ class Player {
 		this.doodle = null;
 		this.startingDoodles = [];
 		this.batData = {
-			blockDisp: false,
 			attacking: false,
 			beingAttacked: false,
 			blockFlag: true,
@@ -76,7 +75,7 @@ class Player {
 		};
 	}
 	getDoodle () {
-		this.doodle = new Doodle (this.player.toString(), doodleLibrary[this.startingDoodles[0]]);
+		this.doodle = new Doodle (this.player, doodleLibrary[this.startingDoodles[0]]);
 		this.startingDoodles.shift();
 		this.doodle.setSpecial();
 		this.displayHealth();
@@ -135,11 +134,11 @@ class Player {
 			}
 		}
 		if (evt.key === this.blockKey) {
-			if (this.batData.block && this.batData.blockFlag) {
+			if (this.batData.block && this.batData.blockFlag && this.batData.beingAttacked && !this.batData.attacking) {
 				battle.inputBlockFrom(this.player, true);
-				return;
+			} else {
+				battle.inputBlockFrom(this.player, false);
 			}
-			battle.inputBlockFrom(this.player, false);
 		}
 	}
 }
@@ -301,8 +300,7 @@ class BattleBar {
 		if (!currentPlayer.batData.lastAttackHit) {
 			currentPlayer.messageElem.textContent = "MISS!";
 			game.players[attackTarget].batData.beingAttacked = false;
-		}
-
+		} 
 		this.attackDelay();
 	}
 }
@@ -316,17 +314,6 @@ const game = {
 	canHeight: 40,
 	canWidth: 200,
 	players: [null],
-	checkBlock () {
-		this.players.forEach( (elem)=> {
-			if (elem) {
-				if (!elem.batData.attacking && elem.batData.beingAttacked && elem.batData.blockFlag) {
-					elem.batData.blockDisp = true;
-				} else {
-					elem.batData.blockDisp = false;
-				}
-			}
-		})
-	},
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
@@ -629,11 +616,9 @@ function setEnemies () {
 
 function animateBlock () {
 
-	game.checkBlock();
-
 	game.players.forEach( (elem) => {
 		if (elem) {
-			if (elem.batData.block) {
+			if (elem.batData.block && elem.batData.beingAttacked && !elem.batData.attacking) {
 				elem.blockElem.style.visibility = "visible";
 			} else {
 				elem.blockElem.style.visibility = "hidden";
