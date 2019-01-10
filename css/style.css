@@ -9,8 +9,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-width: 500px;
-	max-width: 800px;
+	min-width: 550px;
+	max-width: 550px;
 }
 
 #s-screen-display {
@@ -22,7 +22,7 @@ body {
 	/*	main displays  */
 
 #menu {
-	padding: 40px;
+	padding: 20px;
 	display: flex;
 	justify-content: space-around;
 	background-color: white;
@@ -36,9 +36,35 @@ body {
 
 #doodle-descriptions {
 	display: none;
+	align-items: center;
+	justify-content: center;
 	margin: auto;
 }
 
+#doodle-description-display {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.DoodleDescDiv {
+	width: 450px;
+	margin: 20px;
+	display: flex;
+}
+
+.DoodleDescDiv img {
+	height: 80px;
+	width: 80px;
+	align-self: center;
+	margin-right: 20px;
+}
+
+.DoodleDescText {
+	display: flex;
+	flex-direction: column;
+}
 	/*	*/
 
 	/* button row container + buttons */

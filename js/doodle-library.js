@@ -4,7 +4,7 @@ const doodleLibrary = [
 	{
 		name: "SNAKE-ISH",
 		id: "snake-ish",
-		maxHealth: 100,
+		maxHealth: 120,
 		strength: 4,
 		blockHurt: 4,
 		specHit: true,
@@ -36,7 +36,7 @@ const doodleLibrary = [
 	{
 		name: "WILY WISP", 
 		id: "wily-wisp",	
-		maxHealth: 100,
+		maxHealth: 80,
 		strength: 2,
 		blockHurt: 4,		
 		specHit: true,
@@ -55,15 +55,15 @@ const doodleLibrary = [
 	{
 		name: "THE BIG NOPE",
 		id: "big-nope",
-		maxHealth: 120,
-		strength: 8,
-		blockHurt: 8,
+		maxHealth: 100,
+		strength: 6,
+		blockHurt: 10,
 		specHit: false,
 		setSpecial () { 
 			const cP = game.players[this.player];
 			const cEInd = cP.currentEnemy;
 			const cE = game.players[cEInd];
-			game.fearCounter = 3500;
+			game.fearCounter = 3000;
 			game.fIntHandle = setInterval( ()=> {
 				game.fearCounter--; 
 				battle.battleBars[game.players[this.player].currentEnemy].reset();
@@ -121,7 +121,7 @@ const doodleLibrary = [
 		id: "suave-box",
 		maxHealth: 120,
 		strength: 6,
-		blockHurt: 4,
+		blockHurt: 6,
 		specHit: false,
 		setSpecial () { 
 			const cP = game.players[this.player];
@@ -140,7 +140,7 @@ const doodleLibrary = [
 	{
 		name: "PROBLEMATIC DOG",
 		id: "problematic-dog",		
-		maxHealth: 100,
+		maxHealth: 120,
 		strength: 2,
 		blockHurt: 2,
 		specHit: true,
@@ -168,7 +168,7 @@ const doodleLibrary = [
 	{
 		name: "WEDGE BUG",
 		id: "wedge-bug",		
-		maxHealth: 100,
+		maxHealth: 80,
 		strength: 4,
 		blockHurt: 4,
 		specHit: true,
@@ -239,5 +239,88 @@ const doodleLibrary = [
 		natFacingRight: true,
 		src: "images/lil-guy.png",
 		attackAnimation () { },
+	}
+]
+
+const doodleDescriptions = [
+	{
+		name: "SNAKE-ISH",
+		maxHealth: "120",
+		strength: "4",
+		blockHurt: "4",
+		specialName: "OBLIGATORY POISON ABILITY",
+		special: "A successful attack causes your opponent to lose health over time, for a time... You know the drill",
+	},
+	{
+		name: "WILY WISP",
+		maxHealth: "80",
+		strength: "2",
+		blockHurt: "4",
+		specialName: "A TOUCH OF CONFUSION",
+		special: "A successful attack disorients your opponent, canceling any incoming attacks against you",
+	},
+	{
+		name: "THE BIG NOPE",
+		maxHealth: "100",
+		strength: "6",
+		blockHurt: "10",
+		specialName: "Y-'BTHUL NRON Y-LW'NAHRL",
+		special: "On deployment, your opponent will freeze in terror... until they remember this is just a game",
+	},
+	{
+		name: "TRIANGLE MAN",
+		maxHealth: "80",
+		strength: "2",
+		blockHurt: "2",
+		specialName: "PYTHAGOREAN DEFENSES",
+		special: "Superior blocking, the triangle way",
+	},
+	{
+		name: "PARTICLE MAN",
+		maxHealth: "80",
+		strength: "2",
+		blockHurt: "8",
+		specialName: "OBLIGATORY REGENERATION ABILITY",
+		special: "Regains lost health over time, up to its max health",
+	},
+	{
+		name: "SUAVE BOX",
+		maxHealth: "120",
+		strength: "6",
+		blockHurt: "6",
+		specialName: "THE OL' ONE-TWO",
+		special: "On deployment, cut your opponent's current health in half — and do it again if/when SUAVE BOX is KO'ed",
+	},
+	{
+		name: "PROBLEMATIC DOG",
+		maxHealth: "120",
+		strength: "2",
+		blockHurt: "2",
+		specialName: "MAN'S WORST ENEMY",
+		special: "Does extra damage, scaling up as its life goes down",
+	},
+	{
+		name: "WEDGE BUG",
+		maxHealth: "80",
+		strength: "4",
+		blockHurt: "4",
+		specialName: "INKSUCKER",
+		special: "This gross doodle devours life-giving ink from the wounds of its enemy",
+	},
+	{
+		name: "CAT-BAT",
+		maxHealth: "60",
+		strength: "2",
+		blockHurt: "2",
+		specialName: "CAT-BAT-LIKE REFLEXES",
+		special: "Hard to pin down, this doodle increases the delay between your opponent's attacks",
+	},
+	{
+		name: "LIL' GUY",
+		maxHealth: "100",
+		strength: "2",
+		blockHurt: "6",
+		specialName: "SNEAK ATTACK",
+		special: "Attacks from this doodle cannot be blocked",
 	}
 ]

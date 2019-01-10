@@ -343,6 +343,43 @@ const game = {
 			menuItem.appendChild(doodleIMG);
 			menuItem.appendChild(doodleName);
 		});
+		doodleLibrary.forEach( (elem, index) => {
+			const doodleDescDiv = document.createElement("DIV");
+			doodleDescDiv.classList.add("DoodleDescDiv");
+			const doodleIcon = document.createElement("IMG");
+			doodleIcon.src = elem.src;
+			const doodleDescTextDiv = document.createElement("DIV");
+			doodleDescTextDiv.classList.add("DoodleDescText");
+
+			const doodleDesc1 = document.createElement("DIV");
+			doodleDesc1.textContent = "NAME: " + doodleDescriptions[index].name;
+			doodleDescTextDiv.appendChild(doodleDesc1);
+
+			const doodleDesc2 = document.createElement("DIV");
+			doodleDesc2.textContent = "MAXHEALTH: " + doodleDescriptions[index].maxHealth;
+			doodleDescTextDiv.appendChild(doodleDesc2); 
+
+			const doodleDesc3 = document.createElement("DIV");
+			doodleDesc3.textContent = "STRENGTH: " + doodleDescriptions[index].strength;
+			doodleDescTextDiv.appendChild(doodleDesc3);
+
+			const doodleDesc4 = document.createElement("DIV");
+			doodleDesc4.textContent = "BLOCKHURT: " + doodleDescriptions[index].blockHurt;
+			doodleDescTextDiv.appendChild(doodleDesc4); 
+
+			const doodleDesc5 = document.createElement("DIV");
+			doodleDesc5.textContent = "SPECIAL: " + doodleDescriptions[index].specialName;
+			doodleDescTextDiv.appendChild(doodleDesc5); 
+
+			const doodleDesc6 = document.createElement("DIV");
+			doodleDesc6.textContent = doodleDescriptions[index].special;
+			doodleDescTextDiv.appendChild(doodleDesc6);
+
+			doodleDescDiv.appendChild(doodleIcon);
+			doodleDescDiv.appendChild(doodleDescTextDiv);
+
+			doodleDescHome.appendChild(doodleDescDiv);
+		});
 	},
 	showArena () {
 		document.getElementById("arena").style.display = "flex";
@@ -497,7 +534,7 @@ const clearSelectionsBtn = document.getElementById("clear-selections-btn");
 const selectionMenu = document.getElementById("menu");
 const rulesDisplay = document.getElementById("rules");
 const doodleDescDisplay = document.getElementById("doodle-descriptions");
-
+const doodleDescHome = document.getElementById("doodle-description-display");
 
 // displays -- arena screen 
 const poolLocation1 = document.getElementById("doodle-pool-player-1");
@@ -519,13 +556,13 @@ menuDisplayBtn.addEventListener("click", (evt) => {
 rulesDisplayBtn.addEventListener("click", (evt) => {
 	doodleDescDisplay.style.display = "none";
 	selectionMenu.style.display = "none";
-	rulesDisplay.style.display = "block";
+	rulesDisplay.style.display = "flex";
 })
 
 doodleDescDispBtn.addEventListener("click", (evt) => {
 	rulesDisplay.style.display = "none";
 	selectionMenu.style.display = "none";
-	doodleDescDisplay.style.display = "block";
+	doodleDescDisplay.style.display = "flex";
 })
 
 clearSelectionsBtn.addEventListener("click", () => {
