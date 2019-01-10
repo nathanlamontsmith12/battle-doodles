@@ -39,9 +39,10 @@ class Player {
 		this.blockKey = blockKey,
 		this.currentEnemy = null;
 		this.lives = 0;
-		this.doodle = {};
+		this.doodle = null;
 		this.startingDoodles = [];
 		this.batData = {
+			blockDisp: false,
 			attacking: false,
 			beingAttacked: false,
 			blockFlag: true,
@@ -237,7 +238,7 @@ class BattleBar {
 		game.players[this.player].batData.dotMoving = true;
 		game.players[this.player].batData.dotF = true;
 	}
-	attackDelay (attackedPlayer) {
+	attackDelay () {
 		game.players[this.player].batData.active = false;
 		if (!game.players[this.player].batData.lastAttackHit) {
 			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayMiss + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayMiss - game.players[this.player].batData.minDelayMiss));
@@ -255,47 +256,54 @@ class BattleBar {
 				this.eraseDDot();
 			} else {
 				clearInterval(game.players[this.player].batData.delayHandle);
-				battle.dealDamage(game.players[this.player].batData.damage, this.player, attackedPlayer); 
+				battle.dealDamage(game.players[this.player].batData.damage, this.player, game.players[this.player].currentEnemy); 
 				this.reset();
 			}
 		}, 500);
 	}
-	checkHit () { 
+	checkHit (attackTarget) { 
 		const leftLim = this.hitBox.x; 
 		const rightLim = this.hitBox.x + this.hitBox.width;
 		
-		game.players[this.player].batData.lastAttackHit = false;
-		game.players[this.player].batData.pHit = false;
+		const currentPlayer = game.players[this.player];
 
-		if (game.players[this.player].batData.dotF) {
+		console.log("attack target is " + attackTarget);
+
+		game.players[attackTarget].batData.beingAttacked = true;
+		currentPlayer.batData.lastAttackHit = false;
+		currentPlayer.batData.pHit = false;
+
+		if (currentPlayer.batData.dotF) {
 			if (this.attackDot.x + this.attackDot.r <= rightLim && this.attackDot.x - this.attackDot.r >= leftLim) {
-				game.players[this.player].messageElem.textContent = "PERFECT HIT!";
-				game.players[this.player].batData.lastAttackHit = true;
-				game.players[this.player].batData.pHit = true;
-				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (game.players[this.player].batData.speed * 2)) * 2;
+				currentPlayer.messageElem.textContent = "PERFECT HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.pHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2)) * 2;
 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-				game.players[this.player].messageElem.textContent = "HIT!";
-				game.players[this.player].batData.lastAttackHit = true;
-				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (this.speed * 2));
+				currentPlayer.messageElem.textContent = "HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2));
 			}
 		}
-		if (!game.players[this.player].batData.dotF) {
+		if (!currentPlayer.batData.dotF) {
 			if (this.attackDot.x - this.attackDot.r >= leftLim && this.attackDot.x + this.attackDot.r <= rightLim) {
-				game.players[this.player].messageElem.textContent = "PERFECT HIT!";
-				game.players[this.player].batData.lastAttackHit = true;
-				game.players[this.player].batData.pHit = true;
-				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (this.speed * 2)) * 2;
+				currentPlayer.messageElem.textContent = "PERFECT HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.pHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2)) * 2;
 			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
-				game.players[this.player].messageElem.textContent = "HIT!";
-				game.players[this.player].batData.lastAttackHit = true;
-				game.players[this.player].batData.damage = (game.players[this.player].doodle.strength + (game.players[this.player].batData.speed * 2));
+				currentPlayer.messageElem.textContent = "HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2));
 			}
 		}
 
-		if (!game.players[this.player].batData.lastAttackHit) {
-			game.players[this.player].messageElem.textContent = "MISS!";
-			game.players[this.player].batData.damage = 0;
+		if (!currentPlayer.batData.lastAttackHit) {
+			currentPlayer.messageElem.textContent = "MISS!";
+			game.players[attackTarget].batData.beingAttacked = false;
 		}
+
+		this.attackDelay();
 	}
 }
 
@@ -312,9 +320,9 @@ const game = {
 		this.players.forEach( (elem)=> {
 			if (elem) {
 				if (!elem.batData.attacking && elem.batData.beingAttacked && elem.batData.blockFlag) {
-					elem.batData.block = true;
+					elem.batData.blockDisp = true;
 				} else {
-					elem.batData.block = false;
+					elem.batData.blockDisp = false;
 				}
 			}
 		})
@@ -372,7 +380,7 @@ const game = {
 		filler.forEach((elem) => {
 			doodleArray.push(elem);
 		})
-	}, 
+	},
 	setDoodles (player) {
 		game.players[player].getDoodle();
 	},
@@ -438,27 +446,30 @@ const battle = {
 	battleBars: [null],
 	dealDamage (damage, fromPlayer, toPlayer) {
 		game.players[fromPlayer].batData.attacking = false;
-		game.players[toPlayer].beingAttacked = false;
+		game.players[toPlayer].batData.beingAttacked = false;
 		if (game.players[toPlayer].batData.blockActive) {
 			game.players[toPlayer].doodle.health -= Math.floor(damage / game.players[toPlayer].doodle.blockMod);
 			game.players[toPlayer].batData.blockActive = false;
 		} else {
 			game.players[toPlayer].doodle.health -= damage;
 		}
+		console.log("Player " + fromPlayer + " has done " + damage + " damage to Player " + toPlayer);  // REMOVE LATER
+		console.log("Player " + toPlayer + " is at " + game.players[toPlayer].doodle.health + " health"); // REMOVE LATER
 	},
 	inputAttackFrom (player) {
 		game.players[player].batData.attacking = true;
 		const attackTarget = game.players[player].currentEnemy;
-		game.players[attackTarget].batData.beingAttacked = true;
-		battle.battleBars[player].checkHit();
-		battle.battleBars[player].attackDelay(attackTarget);
+		game.players[attackTarget].batData.block = true;
+		this.battleBars[player].checkHit(attackTarget);
 	},
 	inputBlockFrom (player, goodBlock) {
+		currentPlayer = game.players[player];
 		if (goodBlock) {
-			game.players[player].blockActive = true;
-			game.players[player].batData.block = false; 
+			currentPlayer.batData.blockActive = true;
+			currentPlayer.batData.block = false; 
 		} else {
-			game.players[player].doodle.health -= game.players[player].doodle.blockHurt;
+			currentPlayer.doodle.health -= currentPlayer.doodle.blockHurt;
+			console.log(currentPlayer.doodle.health)
 		}
 	}
 }
