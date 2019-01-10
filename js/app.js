@@ -1,25 +1,6 @@
-console.log("DOODLE BATTLE");
-
-// TO DO: 
-// 1.) Rules added 
-// 2.) Special abilities -- strength + weakness for each 
-// 3.) Playtest / balance the doodles 
-// 4.) Basic animations 
-// 5.) Tweak UI and battle display 
-// 6.) Allow players to set advantage / disadvantage   
-
-// ------------------------
-
-// 13.) basic sound effects 
-// 14.) music 
-// 15.) single-player mode 
-// 16.) more complex animations 
-
-
+console.log("app.js Linked");
 
 const doodleArray = [];
-
-// Class 
 
 class Doodle {
 	constructor (player, doodle) {
@@ -51,15 +32,289 @@ class Doodle {
 }
 
 
-// Game data 
+class Player {
+	constructor (player, attackKey, blockKey) {
+		this.player = player;
+		this.attackKey = attackKey,
+		this.blockKey = blockKey,
+		this.currentEnemy = null;
+		this.lives = 0;
+		this.doodle = null;
+		this.startingDoodles = [];
+		this.batData = {
+			attacking: false,
+			beingAttacked: false,
+			blockFlag: true,
+			block: false,
+			damage: 0,
+			pHit: false,
+			delayHandle: null,
+			delay: 0,
+			maxDelay: 10,
+			delayPenalty: 2,
+			minDelayHit: 2,
+			maxDelayHit: 4,
+			minDelayMiss: 2,
+			maxDelayMiss: 6,
+			lastAttackHit: true,
+			active: false,
+			width: game.canWidth,
+			height: game.canHeight,
+			hitW: 20,
+			dotR: 7,
+			dotMoving: false,
+			dotF: true,
+			aniHandle: null,
+			aniX: 0,
+			minSpeed: 5,
+			maxSpeed: 8,
+			speed: 1,
+			x: 0,
+			y: 0,
+			color: "white"
+		};
+	}
+	getDoodle () {
+		this.doodle = new Doodle (this.player, doodleLibrary[this.startingDoodles[0]]);
+		this.startingDoodles.shift();
+		this.doodle.setSpecial();
+		this.checkHealth();
+	}
+	doodleKO () {
+		this.doodle.clearSpecial();
+		this.doodle.erase();
+		const dPImages = document.querySelectorAll(`#player-${this.player}-s-display .miniSelDisp`);
+		dPImages[0].remove();
+		this.getDoodle();
+		this.doodle.draw();
+	}	
+	checkHealth () {
+		this.displayHealth();
+		if (this.doodle.health <= 0) {
+			this.lives--;
+			this.displayLives();
+			if (this.lives > 0) {
+				this.doodleKO();
+			}
+		}
+		this.displayHealth();
+	}
+	checkLives () {
+		if (this.lives <= 0) {
+			alert(`Player ${this.currentEnemy} Wins!`);
+			location.reload();
+		}
+	}
+	displayHealth () {
+		this.healthElem.textContent = this.doodle.health.toString();
+		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
+		hBarPerc = hBarPerc.toString();
+		document.getElementById(`p${this.player}-health-remaining`).style.width = `${hBarPerc}%`;
+	}
+	updateSelectionDisplay () {
+		this.startingDoodles.forEach( (elem, index) => {
+			const location = document.getElementById(`p${this.player}-selection-${index + 1}`);
+			const picToPlace = document.createElement("IMG");
+			const doodlePicInd = parseInt(elem);
+			picToPlace.src = doodleLibrary[doodlePicInd].src;
+			picToPlace.classList.add("miniSelDisp");
+			location.appendChild(picToPlace);
+		});	
+	}
+	displayLives() {
+		document.getElementById(`player-${this.player}-lives`).textContent = this.lives.toString();
+	}
+	keypress (evt) {
+
+		if (this.batData.active) {
+			if (this.batData.dotMoving && !this.batData.attacking) {
+				if (evt.key === this.attackKey) {
+					this.batData.attacking = true;
+					this.batData.dotMoving = false; 
+					battle.inputAttackFrom(this.player);
+				}
+			}
+		}
+		if (evt.key === this.blockKey) {
+			if (this.batData.block && this.batData.blockFlag && this.batData.beingAttacked && !this.batData.attacking) {
+				battle.inputBlockFrom(this.player, true);
+			} else {
+				battle.inputBlockFrom(this.player, false);
+			}
+		}
+	}
+}
+
+class BattleBar {
+	constructor (player) {
+		this.player = player;
+		this.hitBox = {
+			x: 0,
+			y: 0, 
+			width: 0,
+			height: 0,
+			color: 0,
+		};
+		this.attackDot = {
+			x: 0,
+			y: 0,
+			r: 0,
+		};
+	}
+	setHitBox () {
+		this.hitBox.x = (game.players[this.player].batData.width/2) - (game.players[this.player].batData.hitW/2);
+		this.hitBox.y = 0; 
+		this.hitBox.width = game.players[this.player].batData.hitW;
+		this.hitBox.height = game.players[this.player].batData.height;
+		this.hitBox.color = "red";
+	}
+	setAttackDot () {
+		this.attackDot.x = game.players[this.player].batData.dotR;
+		this.attackDot.y = game.players[this.player].batData.height/2; 
+		this.attackDot.r = game.players[this.player].batData.dotR;
+	}
+	drawBBar () {
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.rect(game.players[this.player].batData.x, game.players[this.player].batData.y, game.players[this.player].batData.width, game.players[this.player].batData.height);
+		game.players[this.player].ctx.fillStyle = game.players[this.player].batData.color;
+		game.players[this.player].ctx.fill();
+	}
+	drawHBox () {
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+		game.players[this.player].ctx.fillStyle = this.hitBox.color;
+		game.players[this.player].ctx.fill();
+	}
+	drawADot () {
+		game.players[this.player].ctx.beginPath();
+		game.players[this.player].ctx.arc(this.attackDot.x, this.attackDot.y, this.attackDot.r, 0, 2*Math.PI);
+		game.players[this.player].ctx.fillStyle = "black";
+		game.players[this.player].ctx.fill();
+	}
+	erase () {
+		game.players[this.player].ctx.clearRect(0, 0, game.players[this.player].batData.width, game.players[this.player].batData.height);
+	}
+	eraseDDot () {
+		this.erase();
+		this.drawBBar();
+		this.drawHBox();
+	}
+	checkDotDirection () {
+		if (game.players[this.player].batData.aniX >= (game.players[this.player].batData.width - (this.attackDot.r*2))) {	
+
+			game.players[this.player].batData.aniX = 0;
+
+			if (game.players[this.player].batData.dotF) {
+				game.players[this.player].batData.dotF = false;
+			} else {
+				game.players[this.player].batData.dotF = true;
+			}
+		}
+	}
+	moveDot () {
+		this.erase();
+		this.drawBBar();
+		this.drawHBox();
+		if (game.players[this.player].batData.dotF) {
+			this.attackDot.x += game.players[this.player].batData.speed;
+		} else {
+			this.attackDot.x -= game.players[this.player].batData.speed;
+		}
+		this.drawADot();
+	}
+	setSpeed () {
+		const newSpeedMod = Math.floor(Math.random()*(game.players[this.player].batData.maxSpeed - game.players[this.player].batData.minSpeed + 1));
+		game.players[this.player].batData.speed = game.players[this.player].batData.minSpeed + newSpeedMod;
+	}
+	reset () {
+	 	this.erase();
+		game.players[this.player].batData.delay = 0;
+		game.players[this.player].batData.active = true;
+		game.players[this.player].batData.aniX = 0;
+		this.attackDot.x = game.players[this.player].batData.dotR;
+		this.setSpeed();
+		this.drawBBar();
+		this.drawHBox();
+		this.drawADot();
+		game.players[this.player].batData.dotMoving = true;
+		game.players[this.player].batData.dotF = true;
+	}
+	attackDelay () {
+		game.players[this.player].batData.active = false;
+		if (!game.players[this.player].batData.lastAttackHit) {
+			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayMiss + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayMiss - game.players[this.player].batData.minDelayMiss));
+		} else {
+			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayHit + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayHit - game.players[this.player].batData.minDelayHit));
+		}
+
+		if (game.players[this.player].batData.delay > game.players[this.player].batData.maxDelay) {
+			game.players[this.player].batData.delay = game.players[this.player].batData.maxDelay;
+		}
+
+		game.players[this.player].batData.delayHandle = setInterval(()=>{
+			if (game.players[this.player].batData.delay > 0) {
+				game.players[this.player].batData.delay--;
+				this.eraseDDot();
+			} else {
+				clearInterval(game.players[this.player].batData.delayHandle);
+				battle.dealDamage(game.players[this.player].batData.damage, this.player, game.players[this.player].currentEnemy); 
+				this.reset();
+			}
+		}, 500);
+	}
+	checkHit (attackTarget) { 
+		const leftLim = this.hitBox.x; 
+		const rightLim = this.hitBox.x + this.hitBox.width;
+		
+		const currentPlayer = game.players[this.player];
+
+		game.players[attackTarget].batData.beingAttacked = true;
+		currentPlayer.batData.lastAttackHit = false;
+		currentPlayer.batData.pHit = false;
+
+		if (currentPlayer.batData.dotF) {
+			if (this.attackDot.x + this.attackDot.r <= rightLim && this.attackDot.x - this.attackDot.r >= leftLim) {
+				currentPlayer.messageElem.textContent = "PERFECT HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.pHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2)) * 2;
+			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
+				currentPlayer.messageElem.textContent = "HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2));
+			}
+		}
+		if (!currentPlayer.batData.dotF) {
+			if (this.attackDot.x - this.attackDot.r >= leftLim && this.attackDot.x + this.attackDot.r <= rightLim) {
+				currentPlayer.messageElem.textContent = "PERFECT HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.pHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2)) * 2;
+			} else if (this.attackDot.x >= leftLim && this.attackDot.x <= rightLim) {
+				currentPlayer.messageElem.textContent = "HIT!";
+				currentPlayer.batData.lastAttackHit = true;
+				currentPlayer.batData.damage = (currentPlayer.doodle.strength + (currentPlayer.batData.speed * 2));
+			}
+		}
+
+		if (!currentPlayer.batData.lastAttackHit) {
+			currentPlayer.messageElem.textContent = "MISS!";
+			currentPlayer.batData.damage = 0;
+			game.players[attackTarget].batData.beingAttacked = false;
+		} 
+		this.attackDelay();
+	}
+}
+
 
 const game = {
 	playerSelection: 1,
 	totLives: 3,
 	totPlayers: 2,
-	// blockAniHandle: null,
-	// globalAniHandle: null,
 	selections: [],
+	canHeight: 40,
+	canWidth: 200,
+	players: [null],
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
@@ -84,6 +339,7 @@ const game = {
 	},
 	init0 () {
 		this.refillDoodleArray();
+		this.makePlayers();
 		this.loadMenu();
 	},
 	init1 () {
@@ -92,25 +348,29 @@ const game = {
 	init2 () {
 		document.getElementById("s-screen").style.display = "none";
 		this.showArena();
-		batBData1.activate();
-		batBData2.activate();
-		this.setDoodles();
-		this.drawDoodles();
-		this.setLives();
-		player1.displayLives();
-		player2.displayLives();
+		this.setPlayers();
+
+		for (let i = 1; i <= this.totPlayers; i++) {
+			this.setDoodles(i);
+			this.drawDoodles(i);
+			this.setLives(i);
+		}
+
 		this.setDoodlePool();
-		animateBlock();
+		startAnimation();
+	},
+	makePlayers () {
+		addPlayer(1, "a", "d");
+		addPlayer(2, "j", "l");
 	},
 	refillDoodleArray () {
 		const filler = doodleLibrary.slice();
 		filler.forEach((elem) => {
 			doodleArray.push(elem);
 		})
-	}, 
-	setDoodles () {
-		player1.getDoodle();
-		player2.getDoodle();
+	},
+	setDoodles (player) {
+		game.players[player].getDoodle();
 	},
 	setDoodlePool () {
 		poolLocation1.appendChild(p1DoodlePool);
@@ -122,19 +382,35 @@ const game = {
 		p1DoodlePool.style.borderStyle = "none";
 		p2DoodlePool.style.borderStyle = "none";
 	},
-	setLives () {
-		player1.lives = this.totLives;
-		player2.lives = this.totLives;
+	setLives (player) {
+		game.players[player].lives = this.totLives;
+		game.players[player].displayLives();
 	},
-	drawDoodles () {
-		player1.doodle.draw();
-		player2.doodle.draw();
+	setPlayers () {
+		setEnemies();
+		setPlayerElements(game.totPlayers);
+		setBattleBars(2);
+
+		battle.battleBars[1].setHitBox();
+		battle.battleBars[2].setHitBox();
+
+		battle.battleBars[1].setAttackDot();
+		battle.battleBars[2].setAttackDot();
+
+		battle.battleBars[1].reset();
+		battle.battleBars[2].reset();	
+	},
+	drawDoodles (player) {
+		game.players[player].doodle.draw();
 	},
 	clearSelections () {
 		this.selections = [];
 		this.playerSelection = 1;
-		player1.startingDoodles = [];
-		player2.startingDoodles = [];
+		game.players.forEach( (elem, player) => {
+			if (elem) {
+				elem.startingDoodles = [];
+			}
+		})
 	},
 	clearSelectionDisplay () {
 		const allSelected = document.querySelectorAll(".miniSelDisp");
@@ -150,215 +426,39 @@ const game = {
 		allImages.forEach( (elem) => {
 			elem.style.opacity = 1;
 		})
-	},
-}
-
-
-// Player data 
-
-// PLAYER   1
-
-
-
-const player1 = {
-	lives: 0,
-	attacking: false,
-	block: false,
-	doodle: null,
-	startingDoodles: [],
-	getDoodle () {
-		this.doodle = new Doodle ("1", doodleLibrary[this.startingDoodles[0]]);
-		this.startingDoodles.shift();
-		this.doodle.setSpecial();
-		this.displayHealth();
-	},
-	displayHealth () {
-		health1.textContent = this.doodle.health.toString();
-		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
-		hBarPerc = hBarPerc.toString();
-		document.getElementById("p1-health-remaining").style.width = `${hBarPerc}%`;
-	},
-	checkHealth () {
-		if (this.doodle.health <= 0) {
-			this.lives--;
-			this.displayLives();
-			if (this.lives > 0) {
-				this.doodleKO();
-			}
-		}
-	},
-	checkLives () {
-		if (this.lives <= 0) {
-			alert("Player 2 Wins!");
-			location.reload();
-		}
-	},
-	displayLives() {
-		document.getElementById("player-1-lives").textContent = this.lives.toString();
-	},
-	doodleKO () {
-		this.doodle.clearSpecial();
-		this.doodle.erase();
-		const dPImages = document.querySelectorAll("#player-1-s-display .miniSelDisp");
-		dPImages[0].remove();
-		this.getDoodle();
-		this.doodle.draw();
-	},
-	attack () {
-
-		if (!batBData1.lastAttackHit) {
-			return;
-		}
-		player2.block = true;
-	},
-	dealDamage () {
-		this.attacking = false;
-		player2.block = false;
-		player2.doodle.health = player2.doodle.health -= batBData1.damage;
-		player2.displayHealth();
-		player2.checkHealth();
-		player2.checkLives();
-	},
-	updateSelectionDisplay () {
-		this.startingDoodles.forEach( (elem, index) => {
-			const location = document.getElementById(`p1-selection-${index + 1}`);
-			const picToPlace = document.createElement("IMG");
-			const doodlePicInd = parseInt(elem);
-			picToPlace.src = doodleLibrary[doodlePicInd].src;
-			picToPlace.classList.add("miniSelDisp");
-			location.appendChild(picToPlace);
-		});	
-	},
-	keypress (evt) {
-
-		if (batBData1.active) {
-			if (batBData1.dotMoving && !this.attacking) {
-				if (evt.key === "a") {
-					this.attacking = true;
-					batBData1.dotMoving = false; 
-					stopDot1(); 
-					attackDot1.checkHit();
-					this.attack();
-					batBData1.attackDelay();
-				}
-			}
-		}
-		if (evt.key === "d") {
-			if (this.block && !this.attacking) {
-				batBData2.damage = Math.floor(batBData2.damage / this.doodle.blockMod); 
-				this.block = false;
-				return;
-			}
-			this.doodle.health -= this.doodle.blockHurt;
-			this.displayHealth();
-			this.checkHealth();
-			this.checkLives();
-		}
 	}
 }
 
 
-
-// PLAYER   2
-
-
-
-const player2 = {
-	lives: 0,
-	attacking: false,
-	block: false,
-	doodle: null,
-	startingDoodles: [],
-	getDoodle () {
-		this.doodle = new Doodle ("2", doodleLibrary[this.startingDoodles[0]]);
-		this.startingDoodles.shift();
-		this.doodle.setSpecial();
-		this.displayHealth();
-	},
-	displayHealth () {
-		health2.textContent = this.doodle.health.toString();
-		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
-		hBarPerc = hBarPerc.toString();
-		document.getElementById("p2-health-remaining").style.width = `${hBarPerc}%`;
-	},
-	checkHealth () {
-		if (this.doodle.health <= 0) {
-			this.lives--;
-			this.displayLives();
-			if (this.lives > 0) {
-				this.doodleKO();
-			}
+const battle = {
+	battleBars: [null],
+	dealDamage (damage, fromPlayer, toPlayer) {
+		game.players[fromPlayer].batData.attacking = false;
+		game.players[toPlayer].batData.beingAttacked = false;
+		if (game.players[toPlayer].batData.blockActive) {
+			game.players[toPlayer].doodle.health -= Math.floor(damage / game.players[toPlayer].doodle.blockMod);
+			game.players[toPlayer].batData.blockActive = false;
+		} else {
+			game.players[toPlayer].doodle.health -= damage;
 		}
 	},
-	checkLives () {
-		if (this.lives <= 0) {
-			alert("Player 1 Wins!");
-			location.reload(true);
-		}
+	inputAttackFrom (player) {
+		game.players[player].batData.attacking = true;
+		const attackTarget = game.players[player].currentEnemy;
+		game.players[attackTarget].batData.block = true;
+		this.battleBars[player].checkHit(attackTarget);
 	},
-	displayLives () {
-		document.getElementById("player-2-lives").textContent = this.lives.toString();
-	},
-	doodleKO () {
-		this.doodle.clearSpecial();
-		this.doodle.erase();
-		const dPImages = document.querySelectorAll("#player-2-s-display .miniSelDisp");
-		dPImages[0].remove();
-		this.getDoodle();
-		this.doodle.draw();
-	},
-	attack () {
-
-		if (!batBData2.lastAttackHit) {
-			return;
-		}
-		player1.block = true;
-	},
-	dealDamage () {
-		this.attacking = false;
-		player1.block = false;
-		player1.doodle.health = player1.doodle.health -= batBData2.damage;
-		player1.displayHealth();
-		player1.checkHealth();
-		player1.checkLives();
-	},
-	updateSelectionDisplay () {
-		player2.startingDoodles.forEach( (elem, index) => {
-			const location = document.getElementById(`p2-selection-${index + 1}`);
-			const picToPlace = document.createElement("IMG");
-			const doodlePicInd = parseInt(elem);
-			picToPlace.src = doodleLibrary[doodlePicInd].src;
-			picToPlace.classList.add("miniSelDisp");
-			location.appendChild(picToPlace);
-		});
-	},
-	keypress (evt) {
-
-		if (batBData2.active) {
-			if (batBData2.dotMoving && !this.attacking) {
-				if (evt.key === "j") {
-					this.attacking = true;
-					batBData2.dotMoving = false;
-					stopDot2(); 
-					attackDot2.checkHit();
-					this.attack();
-					batBData2.attackDelay();
-				}
-			}
-		}
-		if (evt.key === "l") {
-			if (this.block && !this.attacking) {
-				batBData1.damage = Math.floor(batBData1.damage / this.doodle.blockMod); 
-				this.block = false;
-				return;
-			};
-			this.doodle.health -= this.doodle.blockHurt;
-			this.displayHealth();
-			this.checkHealth();
-			this.checkLives();
+	inputBlockFrom (player, goodBlock) {
+		currentPlayer = game.players[player];
+		if (goodBlock) {
+			currentPlayer.batData.blockActive = true;
+			currentPlayer.batData.block = false; 
+		} else {
+			currentPlayer.doodle.health -= currentPlayer.doodle.blockHurt;
 		}
 	}
 }
+
 
 // *** CACHED ELEMENTS *** 
 
@@ -408,6 +508,13 @@ clearSelectionsBtn.addEventListener("click", () => {
 	game.wipeSelections();
 })
 
+document.addEventListener("keypress", (evt) => {
+	game.players.forEach( (elem) => {
+		if (elem) {
+			elem.keypress(evt);
+		}
+	})
+})
 
 document.getElementById("menu").addEventListener("click", (evt) => {
 
@@ -437,16 +544,20 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 	}
 
 	if (game.playerSelection === 1) {
-		player1.startingDoodles.push(tracker);
+		game.players[1].startingDoodles.push(tracker);
 	}
 
 	if (game.playerSelection === 2) {
-		player2.startingDoodles.push(tracker);
+		game.players[2].startingDoodles.push(tracker);
 	}
 
 	game.clearSelectionDisplay();
-	player1.updateSelectionDisplay();
-	player2.updateSelectionDisplay();
+
+	game.players.forEach( (elem, player) => {
+		if (elem) {
+			elem.updateSelectionDisplay();
+		}
+	})
 
 	if (game.playerSelection === 1) {
 		game.playerSelection = 2;
@@ -462,44 +573,86 @@ document.getElementById("menu").addEventListener("click", (evt) => {
 })
 
 
-document.addEventListener("keypress", (evt) => {
+// *** FUNCTIONS *** 
 
-// Battle bar 1: 
-	player1.keypress(evt);
-
-// Battle bar 2: 
-	player2.keypress(evt);
-
-})
-
-
-
-// FUNCTIONS 
-
-game.init0();
-
-function display () {
-	console.log(game);
-	console.log(player1);
-	console.log(player2);
+function setBattleBars (totPlayers) {
+	for (let i = 1; i <= totPlayers; i++) {
+		const newBattleBar = new BattleBar(i);
+		battle.battleBars.push(newBattleBar);
+	}
 }
 
-// function animateBlock () {
+function addPlayer (playerNum, attackKey, blockKey) {
+		const newPlayer = new Player(playerNum, attackKey, blockKey);
+		game.players.push(newPlayer);
+}
 
-// 	if (player1.block && !player1.attacking) {
-// 		block1.style.visibility = "visible";
-// 	} else {
-// 		block1.style.visibility = "hidden";
-// 	}
-
-// 	if (player2.block && !player2.attacking) {
-// 		block2.style.visibility = "visible";
-// 	} else {
-// 		block2.style.visibility = "hidden";
-// 	}
-
-// 	game.blockAniHandle = window.requestAnimationFrame(animateBlock);
-// }
-
+function setPlayerElements (totPlayers) {
+	for (let i = 1; i <= totPlayers; i++) {
+		const currentPlayer = game.players[i];
+		currentPlayer.canvas = document.getElementById("battle-bar-" + i);
+		currentPlayer.ctx = currentPlayer.canvas.getContext("2d");
+		currentPlayer.messageElem = document.getElementById("message-" + i);
+		currentPlayer.healthElem = document.getElementById("health-" + i);
+		currentPlayer.blockElem = document.getElementById("block-" + i);
+	}
+}
 
 
+function setEnemies () {
+	game.players.forEach( (elem, player)=> {
+		if (elem) {
+			if (player === 1) {
+				elem.currentEnemy = 2;
+			}
+			if (player === 2) {
+				elem.currentEnemy = 1;
+			}
+		}
+	})
+}
+
+function animateBlock () {
+
+	game.players.forEach( (elem) => {
+		if (elem) {
+			if (elem.batData.block && elem.batData.beingAttacked && !elem.batData.attacking) {
+				elem.blockElem.style.visibility = "visible";
+			} else {
+				elem.blockElem.style.visibility = "hidden";
+			}
+		}
+	})
+}
+
+function animateDot () {
+	battle.battleBars.forEach( (elem, player) => {
+		if (elem) {
+			if (game.players[player].batData.active) {
+				game.players[player].batData.aniX += game.players[player].batData.speed;
+				elem.checkDotDirection();
+				elem.moveDot();
+			}
+		}
+	})
+}
+
+function startAnimation () {
+	animateBlock();
+	animateDot();
+	game.players.forEach( (elem) => {
+		if (elem) {
+			elem.checkHealth();
+			elem.checkLives();
+		}
+	});
+	game.globalAniHandle = window.requestAnimationFrame(startAnimation);
+}
+
+function stopAnimation () {
+	cancelAnimationFrame(animation.globalAniHandle);
+}
+
+// Start yer engines....
+
+game.init0();
