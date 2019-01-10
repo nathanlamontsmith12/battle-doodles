@@ -41,6 +41,8 @@ body {
 	margin: auto;
 }
 
+	/* doodle description display stylings*/
+
 #doodle-description-display {
 	display: flex;
 	flex-direction: column;
@@ -65,6 +67,21 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
+	/* rules display stylings */
+
+#rules-display {
+	margin: 30px;
+}
+
+#rules-display div {
+	margin-bottom: 20px;
+}
+
+.center {
+	text-align: center;
+}
+
 	/*	*/
 
 	/* button row container + buttons */

@@ -352,11 +352,11 @@ const game = {
 			doodleDescTextDiv.classList.add("DoodleDescText");
 
 			const doodleDesc1 = document.createElement("DIV");
-			doodleDesc1.textContent = "NAME: " + doodleDescriptions[index].name;
+			doodleDesc1.textContent = doodleDescriptions[index].name;
 			doodleDescTextDiv.appendChild(doodleDesc1);
 
 			const doodleDesc2 = document.createElement("DIV");
-			doodleDesc2.textContent = "MAXHEALTH: " + doodleDescriptions[index].maxHealth;
+			doodleDesc2.textContent = "HP: " + doodleDescriptions[index].maxHealth;
 			doodleDescTextDiv.appendChild(doodleDesc2); 
 
 			const doodleDesc3 = document.createElement("DIV");
@@ -368,7 +368,7 @@ const game = {
 			doodleDescTextDiv.appendChild(doodleDesc4); 
 
 			const doodleDesc5 = document.createElement("DIV");
-			doodleDesc5.textContent = "SPECIAL: " + doodleDescriptions[index].specialName;
+			doodleDesc5.textContent = doodleDescriptions[index].specialName;
 			doodleDescTextDiv.appendChild(doodleDesc5); 
 
 			const doodleDesc6 = document.createElement("DIV");
@@ -557,7 +557,6 @@ rulesDisplayBtn.addEventListener("click", (evt) => {
 	doodleDescDisplay.style.display = "none";
 	selectionMenu.style.display = "none";
 	rulesDisplay.style.display = "flex";
-	// window.scrollTo(0, 1500);
 })
 
 doodleDescDispBtn.addEventListener("click", (evt) => {
