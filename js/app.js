@@ -306,6 +306,10 @@ class BattleBar {
 			currentPlayer.batData.damage = 0;
 			game.players[attackTarget].batData.beingAttacked = false;
 		} 
+
+		if (currentPlayer.batData.lastAttackHit && currentPlayer.doodle.specHit) {
+			currentPlayer.doodle.setSpecial();
+		}
 		this.attackDelay();
 	}
 }
@@ -320,6 +324,7 @@ const game = {
 	canWidth: 200,
 	players: [null],
 	poisonCounter: 0,
+	regenCounter: 0,
 	pIntHandle: null,
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {

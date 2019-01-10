@@ -11,7 +11,7 @@ const doodleLibrary = [
 		setSpecial () {
 			const cP = game.players[this.player];
 			const cE = game.players[cP.currentEnemy];
-			if (cP.batData.lastAttackHit) {
+			if (cP.batData.lastAttackHit && !cP.batData.attacking) {
 				if (!cE.doodle.poisoned) {
 					game.poisonCounter = 5;
 					game.pIntHandle = setInterval(()=>{
@@ -39,9 +39,13 @@ const doodleLibrary = [
 		maxHealth: 150,
 		strength: 2,
 		blockHurt: 2,		
-		specHit: false,
+		specHit: true,
 		setSpecial () { 
-			this.blockMod = 6;
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			cP.batData.delay = 0;
+			cE.batData.damage = 0;
+			cE.batData.lastAttackHit = false;
 		},
 		clearSpecial () { },
 		natFacingRight: false,
@@ -68,7 +72,9 @@ const doodleLibrary = [
 		strength: 2,
 		blockHurt: 2,
 		specHit: false,
-		setSpecial () { },
+		setSpecial () {
+			this.blockMod = 6;
+		},
 		clearSpecial () { },
 		natFacingRight: false,		
 		src: "images/triangle-man.png",
@@ -120,7 +126,18 @@ const doodleLibrary = [
 		strength: 2,
 		blockHurt: 2,
 		specHit: true,
-		setSpecial () { },
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			if (!cP.batData.attacking) {
+				if (cP.batData.lastAttackHit) {
+					this.health += Math.floor((cP.batData.damage)/4);
+					if (this.health > this.maxHealth) {
+						this.health = this.maxHealth;
+					}
+				}
+			}
+		},
 		clearSpecial () { },
 		natFacingRight: false,		
 		src: "images/wedge-bug.png",
