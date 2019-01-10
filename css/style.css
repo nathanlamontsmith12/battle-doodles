@@ -154,28 +154,24 @@ body {
 
   /* general */
 
+#arena-container {
+	margin: 20px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
 #arena {
-	margin: 5px;
-	height: 90vh;
-	display: none;  
-	min-height: 550px;
-	min-width: 750px;
+	display: flex;  
+	min-width: 550px;
+	max-width: 800px;
 	justify-content: space-between;
 	align-items: center;
 }
 
-#split {
-	margin: 0;
-	width: 5%;
-	height: 100%;
-	background-color: black;
-	max-height: 580px;
-	align-self: flex-start;
-}
-
 .area {
 	height: 100%;
-	width: 45%;
+	width: 40%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

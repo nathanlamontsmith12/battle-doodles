@@ -324,3 +324,5 @@ const doodleDescriptions = [
 		special: "Attacks from this doodle cannot be blocked",
 	}
 ]
+
+const doodleRules = [""];

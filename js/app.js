@@ -382,10 +382,10 @@ const game = {
 		});
 	},
 	showArena () {
-		document.getElementById("arena").style.display = "flex";
+		document.getElementById("arena-container").style.display = "flex";
 	},
 	hideArena () {
-		document.getElementById("arena").style.display = "none";
+		document.getElementById("arena-container").style.display = "none";
 	},
 	init0 () {
 		this.refillDoodleArray();
@@ -557,12 +557,14 @@ rulesDisplayBtn.addEventListener("click", (evt) => {
 	doodleDescDisplay.style.display = "none";
 	selectionMenu.style.display = "none";
 	rulesDisplay.style.display = "flex";
+	// window.scrollTo(0, 1500);
 })
 
 doodleDescDispBtn.addEventListener("click", (evt) => {
 	rulesDisplay.style.display = "none";
 	selectionMenu.style.display = "none";
 	doodleDescDisplay.style.display = "flex";
+	window.scrollTo(0, 1500);
 })
 
 clearSelectionsBtn.addEventListener("click", () => {
