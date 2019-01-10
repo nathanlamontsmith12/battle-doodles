@@ -63,7 +63,7 @@ const doodleLibrary = [
 			const cP = game.players[this.player];
 			const cEInd = cP.currentEnemy;
 			const cE = game.players[cEInd];
-			game.fearCounter = 3000;
+			game.fearCounter = 3500;
 			game.fIntHandle = setInterval( ()=> {
 				game.fearCounter--; 
 				battle.battleBars[game.players[this.player].currentEnemy].reset();
@@ -83,11 +83,11 @@ const doodleLibrary = [
 		name: "TRIANGLE MAN",
 		id: "triangle-man",		
 		maxHealth: 80,
-		strength: 4,
+		strength: 2,
 		blockHurt: 2,
 		specHit: false,
 		setSpecial () {
-			this.blockMod = 6;
+			this.blockMod = 4;
 		},
 		clearSpecial () { },
 		natFacingRight: false,		
@@ -190,9 +190,9 @@ const doodleLibrary = [
 		attackAnimation () { },	
 	},
 	{
-		name: "CAT BAT",
+		name: "CAT-BAT",
 		id: "cat-bat",
-		maxHealth: 80,
+		maxHealth: 60,
 		strength: 2,
 		blockHurt: 2,
 		specHit: false,
@@ -200,8 +200,8 @@ const doodleLibrary = [
 			const cP = game.players[this.player];
 			const cE = game.players[cP.currentEnemy];
 
-			cE.batData.minDelayHit = cE.batData.minDelayHit * 3;
-			cE.batData.maxDelayHit = cE.batData.maxDelayHit * 3;
+			cE.batData.minDelayHit = cE.batData.minDelayHit * 2;
+			cE.batData.maxDelayHit = cE.batData.maxDelayHit * 2;
 			cE.batData.minDelayMiss = cE.batData.minDelayMiss * 3;
 			cE.batData.maxDelayMiss = cE.batData.maxDelayMiss * 3; 
 
@@ -210,8 +210,8 @@ const doodleLibrary = [
 			const cP = game.players[this.player];
 			const cE = game.players[cP.currentEnemy];
 
-			cE.batData.minDelayHit = cE.batData.minDelayHit / 3;
-			cE.batData.maxDelayHit = cE.batData.maxDelayHit / 3;
+			cE.batData.minDelayHit = cE.batData.minDelayHit / 2;
+			cE.batData.maxDelayHit = cE.batData.maxDelayHit / 2;
 			cE.batData.minDelayMiss = cE.batData.minDelayMiss / 3;
 			cE.batData.maxDelayMiss = cE.batData.maxDelayMiss / 3; 
 		},
