@@ -324,8 +324,10 @@ const game = {
 	canWidth: 200,
 	players: [null],
 	poisonCounter: 0,
-	regenCounter: 0,
+	rIntHandle: null,
 	pIntHandle: null,
+	fIntHandle: null,
+	fearCounter: 0,
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
@@ -639,7 +641,7 @@ function animateBlock () {
 
 	game.players.forEach( (elem) => {
 		if (elem) {
-			if (elem.batData.block && elem.batData.beingAttacked && !elem.batData.attacking) {
+			if (elem.batData.blockFlag && elem.batData.block && elem.batData.beingAttacked && !elem.batData.attacking) {
 				elem.blockElem.style.visibility = "visible";
 			} else {
 				elem.blockElem.style.visibility = "hidden";

@@ -4,7 +4,7 @@ const doodleLibrary = [
 	{
 		name: "SNAKE-ISH",
 		id: "snake-ish",
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 4,
 		specHit: true,
@@ -36,7 +36,7 @@ const doodleLibrary = [
 	{
 		name: "WILY WISP", 
 		id: "wily-wisp",	
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 2,		
 		specHit: true,
@@ -55,12 +55,26 @@ const doodleLibrary = [
 	{
 		name: "THE BIG NOPE",
 		id: "big-nope",
-		maxHealth: 150,
-		strength: 2,
-		blockHurt: 2,
+		maxHealth: 120,
+		strength: 8,
+		blockHurt: 8,
 		specHit: false,
-		setSpecial () { },
-		clearSpecial () { },
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cEInd = cP.currentEnemy;
+			const cE = game.players[cEInd];
+			game.fearCounter = 4000;
+			game.fIntHandle = setInterval( ()=> {
+				game.fearCounter--; 
+				battle.battleBars[game.players[this.player].currentEnemy].reset();
+				if (game.fearCounter <= 0) {
+					clearInterval(game.fIntHandle);
+				} 
+			}, 1)
+		},
+		clearSpecial () { 
+			clearInterval(game.fIntHandle);
+		},
 		natFacingRight: false,		
 		src: "images/big-nope.png",
 		attackAnimation () { },				
@@ -68,7 +82,7 @@ const doodleLibrary = [
 	{
 		name: "TRIANGLE MAN",
 		id: "triangle-man",		
-		maxHealth: 150,
+		maxHealth: 80,
 		strength: 2,
 		blockHurt: 2,
 		specHit: false,
@@ -83,12 +97,21 @@ const doodleLibrary = [
 	{
 		name: "PARTICLE MAN",
 		id: "particle-man",
-		maxHealth: 150,
+		maxHealth: 80,
 		strength: 2,
 		blockHurt: 2,
 		specHit: false,
-		setSpecial () { },
-		clearSpecial () { },
+		setSpecial () { 
+			this.blockMod = 1.5;
+			game.rIntHandle = setInterval(()=>{
+				if (this.health < this.maxHealth) {
+					this.health++;
+				}
+			}, 1000)
+		},
+		clearSpecial () { 
+			clearInterval(game.rIntHandle);
+		},
 		natFacingRight: false,
 		src: "images/particle-man.png",
 		attackAnimation () { },	
@@ -97,11 +120,21 @@ const doodleLibrary = [
 		name: "SUAVE BOX",
 		id: "suave-box",
 		maxHealth: 150,
-		strength: 2,
+		strength: 8,
 		blockHurt: 2,
 		specHit: false,
-		setSpecial () { },
-		clearSpecial () { },
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cEInd = cP.currentEnemy;
+			const cE = game.players[cEInd];
+			cE.doodle.health = Math.floor(cE.doodle.health / 2);
+		},
+		clearSpecial () { 
+			const cP = game.players[this.player];
+			const cEInd = cP.currentEnemy;
+			const cE = game.players[cEInd];
+			cE.doodle.health = Math.floor(cE.doodle.health / 2);
+		},
 		natFacingRight: true,
 		src: "images/suave-box.png",
 		attackAnimation () { },
@@ -109,11 +142,26 @@ const doodleLibrary = [
 	{
 		name: "PROBLEMATIC DOG",
 		id: "problematic-dog",		
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 2,
-		specHit: false,
-		setSpecial () { },
+		specHit: true,
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			let damMod = (this.maxHealth/this.health);
+			if (damMod > 3) {
+				damMod = 3;
+			}
+			if (!cP.batData.attacking) {
+				if (cP.batData.lastAttackHit) {
+					console.log(cP.batData.damage)
+					console.log(damMod)
+					cP.batData.damage = Math.floor(cP.batData.damage * damMod);
+					console.log(cP.batData.damage)
+				}
+			}
+		},
 		clearSpecial () { },
 		natFacingRight: true,		
 		src: "images/problematic-dog.png",
@@ -122,7 +170,7 @@ const doodleLibrary = [
 	{
 		name: "WEDGE BUG",
 		id: "wedge-bug",		
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 2,
 		specHit: true,
@@ -146,10 +194,10 @@ const doodleLibrary = [
 	{
 		name: "CAT BAT",
 		id: "cat-bat",
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 2,
-		specHit: false,
+		specHit: true,
 		setSpecial () { },
 		clearSpecial () { },
 		natFacingRight: true,
@@ -159,12 +207,20 @@ const doodleLibrary = [
 	{
 		name: "LIL' GUY",
 		id: "lil-guy",
-		maxHealth: 150,
+		maxHealth: 100,
 		strength: 2,
 		blockHurt: 2,
 		specHit: false,
-		setSpecial () { },
-		clearSpecial () { },
+		setSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			cE.batData.blockFlag = false;
+		},
+		clearSpecial () { 
+			const cP = game.players[this.player];
+			const cE = game.players[cP.currentEnemy];
+			cE.batData.blockFlag = true;
+		},
 		natFacingRight: true,
 		src: "images/lil-guy.png",
 		attackAnimation () { },
