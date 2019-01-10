@@ -1,4 +1,4 @@
-console.log("Battle Bar 1 Linked");
+console.log("app.js Linked");
 
 const doodleArray = [];
 
@@ -87,14 +87,29 @@ class Player {
 		dPImages[0].remove();
 		this.getDoodle();
 		this.doodle.draw();
+	}	
+	checkHealth () {
+		if (this.doodle.health <= 0) {
+			this.lives--;
+			this.displayLives();
+			if (this.lives > 0) {
+				this.doodleKO();
+			}
+		}
+	}
+	checkLives () {
+		if (this.lives <= 0) {
+			alert("Player 2 Wins!");
+			location.reload();
+		}
 	}
 	displayHealth () {
 		this.healthElem.textContent = this.doodle.health.toString();
 		let hBarPerc = (100*(this.doodle.health / this.doodle.maxHealth)).toFixed(0);
 		hBarPerc = hBarPerc.toString();
 		document.getElementById(`p${this.player}-health-remaining`).style.width = `${hBarPerc}%`;
-	},
-	selectionDisplay () {
+	}
+	updateSelectionDisplay () {
 		this.startingDoodles.forEach( (elem, index) => {
 			const location = document.getElementById(`p${this.player}-selection-${index + 1}`);
 			const picToPlace = document.createElement("IMG");
@@ -103,10 +118,10 @@ class Player {
 			picToPlace.classList.add("miniSelDisp");
 			location.appendChild(picToPlace);
 		});	
-	},
+	}
 	displayLives() {
 		document.getElementById(`player-${this.player}-lives`).textContent = this.lives.toString();
-	},
+	}
 	keypress (evt) {
 
 		if (this.batData.active) {
@@ -303,27 +318,124 @@ const game = {
 				}
 			}
 		})
+	},
+	loadMenu () {
+		doodleArray.forEach( (elem, index) => {
+			const menuItem = document.createElement("DIV"); 
+			menuItem.className = "menuItem";
+			menuItem.id = `${elem.id}-menu-display`;
+			const doodleIMG = document.createElement("IMG");
+			doodleIMG.src = elem.src;
+			doodleIMG.id = index.toString();
+			const doodleName = document.createElement("P");
+			doodleName.classList.add("noClick");
+			doodleName.textContent = elem.name;
+			document.getElementById("menu").appendChild(menuItem);
+			menuItem.appendChild(doodleIMG);
+			menuItem.appendChild(doodleName);
+		});
+	},
+	showArena () {
+		document.getElementById("arena").style.display = "flex";
+	},
+	hideArena () {
+		document.getElementById("arena").style.display = "none";
+	},
+	init0 () {
+		this.refillDoodleArray();
+		this.makePlayers();
+		this.loadMenu();
+	},
+	init1 () {
+		// SAVED for possible one-player mode set up
+	},
+	init2 () {
+		document.getElementById("s-screen").style.display = "none";
+		this.showArena();
+		this.setPlayers();
+
+		for (let i = 1; i <= this.totPlayers; i++) {
+			this.setDoodles(i);
+			this.drawDoodles(i);
+			this.setLives(i);
+		}
+
+		this.setDoodlePool();
+		startAnimation();
+	},
+	makePlayers () {
+		addPlayer(1, "a", "d");
+		addPlayer(2, "j", "l");
+	},
+	refillDoodleArray () {
+		const filler = doodleLibrary.slice();
+		filler.forEach((elem) => {
+			doodleArray.push(elem);
+		})
+	}, 
+	setDoodles (player) {
+		game.players[player].getDoodle();
+	},
+	setDoodlePool () {
+		poolLocation1.appendChild(p1DoodlePool);
+		poolLocation2.appendChild(p2DoodlePool);
+		const tBR = document.querySelectorAll(".sDisplay p");
+		tBR.forEach( (elem) => {
+			elem.style.display = "none";
+		});
+		p1DoodlePool.style.borderStyle = "none";
+		p2DoodlePool.style.borderStyle = "none";
+	},
+	setLives (player) {
+		game.players[player].lives = this.totLives;
+		game.players[player].displayLives();
+	},
+	setPlayers () {
+		setEnemies();
+		setPlayerElements(game.totPlayers);
+		setBattleBars(2);
+
+		battle.battleBars[1].setHitBox();
+		battle.battleBars[2].setHitBox();
+
+		battle.battleBars[1].setAttackDot();
+		battle.battleBars[2].setAttackDot();
+
+		battle.battleBars[1].reset();
+		battle.battleBars[2].reset();	
+	},
+	drawDoodles (player) {
+		game.players[player].doodle.draw();
+	},
+	clearSelections () {
+		this.selections = [];
+		this.playerSelection = 1;
+		game.players.forEach( (elem, player) => {
+			if (elem) {
+				elem.startingDoodles = [];
+			}
+		})
+	},
+	clearSelectionDisplay () {
+		const allSelected = document.querySelectorAll(".miniSelDisp");
+
+		for (let m = 0; m < allSelected.length; m++) {
+			allSelected[m].remove();
+		}
+	},
+	wipeSelections () {
+		this.clearSelections();
+		this.clearSelectionDisplay();
+		const allImages = document.querySelectorAll(".menuItem img");
+		allImages.forEach( (elem) => {
+			elem.style.opacity = 1;
+		})
 	}
 }
 
 
 const battle = {
 	battleBars: [null],
-	checkHealth () {
-		if (this.doodle.health <= 0) {
-			this.lives--;
-			this.displayLives();
-			if (this.lives > 0) {
-				this.doodleKO();
-			}
-		}
-	},
-	checkLives () {
-		if (this.lives <= 0) {
-			alert("Player 2 Wins!");
-			location.reload();
-		}
-	},
 	dealDamage (damage, fromPlayer, toPlayer) {
 		game.players[fromPlayer].batData.attacking = false;
 		game.players[toPlayer].beingAttacked = false;
@@ -351,6 +463,122 @@ const battle = {
 	}
 }
 
+
+// *** CACHED ELEMENTS *** 
+
+// buttons
+const menuDisplayBtn = document.getElementById("doodle-menu-btn");
+const rulesDisplayBtn = document.getElementById("rules-btn");
+const doodleDescDispBtn = document.getElementById("doodle-descriptions-btn");
+const clearSelectionsBtn = document.getElementById("clear-selections-btn");
+
+
+// displays -- starting screen 
+const selectionMenu = document.getElementById("menu");
+const rulesDisplay = document.getElementById("rules");
+const doodleDescDisplay = document.getElementById("doodle-descriptions");
+
+
+// displays -- arena screen 
+const poolLocation1 = document.getElementById("doodle-pool-player-1");
+const poolLocation2 = document.getElementById("doodle-pool-player-2");
+const p1DoodlePool = document.getElementById("player-1-s-display");
+const p2DoodlePool = document.getElementById("player-2-s-display");
+
+
+
+
+// EVENT LISTENERS 
+
+menuDisplayBtn.addEventListener("click", (evt) => {
+	rulesDisplay.style.display = "none";
+	doodleDescDisplay.style.display = "none";
+	selectionMenu.style.display = "flex";
+})
+
+rulesDisplayBtn.addEventListener("click", (evt) => {
+	doodleDescDisplay.style.display = "none";
+	selectionMenu.style.display = "none";
+	rulesDisplay.style.display = "block";
+})
+
+doodleDescDispBtn.addEventListener("click", (evt) => {
+	rulesDisplay.style.display = "none";
+	selectionMenu.style.display = "none";
+	doodleDescDisplay.style.display = "block";
+})
+
+clearSelectionsBtn.addEventListener("click", () => {
+	game.wipeSelections();
+})
+
+document.addEventListener("keypress", (evt) => {
+	game.players.forEach( (elem) => {
+		if (elem) {
+			elem.keypress(evt);
+		}
+	})
+})
+
+document.getElementById("menu").addEventListener("click", (evt) => {
+
+	if (evt.target.id === "menu") {
+		return;
+	}
+
+	if (evt.target.className === "menuItem") {
+		return;
+	}
+
+	if (evt.target.className === "noClick") {
+		return;
+	}
+
+	if (game.selections.length >= (game.totLives)*2) {
+		game.init2();
+		return;
+	}
+
+	evt.target.style.opacity = 0.3;
+
+	const tracker = evt.target.id;
+
+	if (game.selections.includes(tracker)) {
+		return;
+	}
+
+	if (game.playerSelection === 1) {
+		game.players[1].startingDoodles.push(tracker);
+	}
+
+	if (game.playerSelection === 2) {
+		game.players[2].startingDoodles.push(tracker);
+	}
+
+	game.clearSelectionDisplay();
+
+	game.players.forEach( (elem, player) => {
+		if (elem) {
+			elem.updateSelectionDisplay();
+		}
+	})
+
+	if (game.playerSelection === 1) {
+		game.playerSelection = 2;
+	} else {
+		game.playerSelection = 1;
+	}
+
+	game.selections.push(tracker);
+
+	if (game.selections.length >= (game.totLives*2)) {
+		game.init2();
+	}
+})
+
+
+// *** FUNCTIONS *** 
+
 function setBattleBars (totPlayers) {
 	for (let i = 1; i <= totPlayers; i++) {
 		const newBattleBar = new BattleBar(i);
@@ -365,7 +593,6 @@ function addPlayer (playerNum, attackKey, blockKey) {
 
 function setPlayerElements (totPlayers) {
 	for (let i = 1; i <= totPlayers; i++) {
-		console.log("setting player elements for player " + i)
 		const currentPlayer = game.players[i];
 		currentPlayer.canvas = document.getElementById("battle-bar-" + i);
 		currentPlayer.ctx = currentPlayer.canvas.getContext("2d");
@@ -416,25 +643,6 @@ function animateDot () {
 	})
 }
 
-
-function init () {
-	addPlayer(1, "a", "d");
-	addPlayer(2, "j", "l");
-	setEnemies();
-	setPlayerElements(game.totPlayers);
-	setBattleBars(2);
-
-	battle.battleBars[1].setHitBox();
-	battle.battleBars[2].setHitBox();
-
-	battle.battleBars[1].setAttackDot();
-	battle.battleBars[2].setAttackDot();
-
-	battle.battleBars[1].reset();
-	battle.battleBars[2].reset();	
-}
-
-
 function startAnimation () {
 	animateBlock();
 	animateDot();
@@ -445,15 +653,6 @@ function stopAnimation () {
 	cancelAnimationFrame(animation.globalAniHandle);
 }
 
+// Start yer engines....
 
-
-init();
-
-
-document.addEventListener("keypress", (evt) => {
-	game.players.forEach( (elem) => {
-		if (elem) {
-			elem.keypress(evt);
-		}
-	})
-})
+game.init0();
