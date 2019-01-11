@@ -264,6 +264,12 @@ body {
 	background-color: white;
 }
 
+.doodleDisplay img {
+	max-height: 150px;
+	max-width: 150px;
+	padding: 30px;
+}
+
 .batBar {
 	margin: 10px 0;
 }

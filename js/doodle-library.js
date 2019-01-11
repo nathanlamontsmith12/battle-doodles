@@ -31,8 +31,7 @@ const doodleLibrary = [
 		},
 		clearSpecial () { },
 		natFacingRight: false,
-		src: "images/snake-ish.png",
-		attackAnimation () { },		
+		src: "images/snake-ish.png"		
 	},
 	{
 		name: "WILY WISP", 
@@ -50,8 +49,7 @@ const doodleLibrary = [
 		},
 		clearSpecial () { },
 		natFacingRight: false,
-		src: "images/wily-wisp.png",
-		attackAnimation () { },	
+		src: "images/wily-wisp.png"	
 	},
 	{
 		name: "THE BIG NOPE",
@@ -77,8 +75,7 @@ const doodleLibrary = [
 			clearInterval(game.fIntHandle);
 		},
 		natFacingRight: false,		
-		src: "images/big-nope.png",
-		attackAnimation () { },				
+		src: "images/big-nope.png"				
 	},
 	{
 		name: "TRIANGLE MAN",
@@ -92,8 +89,7 @@ const doodleLibrary = [
 		},
 		clearSpecial () { },
 		natFacingRight: false,		
-		src: "images/triangle-man.png",
-		attackAnimation () { },				
+		src: "images/triangle-man.png"				
 	},
 	{
 		name: "PARTICLE MAN",
@@ -114,8 +110,7 @@ const doodleLibrary = [
 			clearInterval(game.rIntHandle);
 		},
 		natFacingRight: false,
-		src: "images/particle-man.png",
-		attackAnimation () { },	
+		src: "images/particle-man.png"	
 	},
 	{
 		name: "SUAVE BOX",
@@ -139,8 +134,7 @@ const doodleLibrary = [
 			cE.doodle.hitAnimation(bigDam);
 		},
 		natFacingRight: true,
-		src: "images/suave-box.png",
-		attackAnimation () { },
+		src: "images/suave-box.png"
 	},
 	{
 		name: "PROBLEMATIC DOG",
@@ -164,8 +158,7 @@ const doodleLibrary = [
 		},
 		clearSpecial () { },
 		natFacingRight: true,		
-		src: "images/problematic-dog.png",
-		attackAnimation () { },	
+		src: "images/problematic-dog.png"	
 	},
 	{
 		name: "WEDGE BUG",
@@ -188,8 +181,7 @@ const doodleLibrary = [
 		},
 		clearSpecial () { },
 		natFacingRight: null,		
-		src: "images/wedge-bug.png",
-		attackAnimation () { },	
+		src: "images/wedge-bug.png"	
 	},
 	{
 		name: "CAT-BAT",
@@ -218,8 +210,7 @@ const doodleLibrary = [
 			cE.batData.maxDelayMiss = cE.batData.maxDelayMiss / 3; 
 		},
 		natFacingRight: true,
-		src: "images/cat-bat.png",
-		attackAnimation () { },	
+		src: "images/cat-bat.png"	
 	},
 	{
 		name: "LIL' GUY",
@@ -239,8 +230,7 @@ const doodleLibrary = [
 			cE.batData.blockFlag = true;
 		},
 		natFacingRight: true,
-		src: "images/lil-guy.png",
-		attackAnimation () { },
+		src: "images/lil-guy.png"
 	}
 ]
 

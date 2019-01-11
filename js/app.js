@@ -14,7 +14,6 @@ class Doodle {
 		this.setSpecial = doodle.setSpecial;
 		this.clearSpecial = doodle.clearSpecial;
 		this.blockHurt = doodle.blockHurt;
-		this.attackAnimation = doodle.attackAnimation; 
 		this.specHit = doodle.specHit;
 		this.natFacingRight = doodle.natFacingRight;
 		this.blockMod = 2;
@@ -65,6 +64,10 @@ class Doodle {
 		} else {
 			thisDoodle.velocity({ marginLeft: jiggle }, { loop: 1, duration: 50 }).velocity({ marginRight: jiggle }, { loop: 1, duration: 150 });
 		}
+	}
+	attackAnimation () {
+		const toAnimate = document.getElementById(`${this.id}`);
+		toAnimate.velocity({ paddingTop: 0 }, { duration: 300, } ).velocity( { paddingTop: 30 }, { duration: 50 } );
 	}
 }
 
