@@ -374,6 +374,12 @@ const game = {
 	pIntHandle: null,
 	fIntHandle: null,
 	loadMenu () {
+		doodleRules.forEach ( (elem) => {
+			const paraLocation = document.getElementById("rules-display");
+			const newParagraph = document.createElement("DIV");
+			newParagraph.textContent = elem;
+			paraLocation.appendChild(newParagraph);
+		});
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
 			menuItem.className = "menuItem";
@@ -388,43 +394,43 @@ const game = {
 			menuItem.appendChild(doodleIMG);
 			menuItem.appendChild(doodleName);
 		});
-		doodleLibrary.forEach( (elem, index) => {
+		for (let i = doodleLibrary.length - 1; i >= 0; i--) {	
 			const doodleDescDiv = document.createElement("DIV");
 			doodleDescDiv.classList.add("DoodleDescDiv");
 			const doodleIcon = document.createElement("IMG");
-			doodleIcon.src = elem.src;
+			doodleIcon.src = doodleLibrary[i].src;
 			const doodleDescTextDiv = document.createElement("DIV");
 			doodleDescTextDiv.classList.add("DoodleDescText");
 
 			const doodleDesc1 = document.createElement("DIV");
-			doodleDesc1.textContent = doodleDescriptions[index].name;
+			doodleDesc1.textContent = doodleDescriptions[i].name;
 			doodleDescTextDiv.appendChild(doodleDesc1);
 
 			const doodleDesc2 = document.createElement("DIV");
-			doodleDesc2.textContent = "HP: " + doodleDescriptions[index].maxHealth;
+			doodleDesc2.textContent = "HP: " + doodleDescriptions[i].maxHealth;
 			doodleDescTextDiv.appendChild(doodleDesc2); 
 
 			const doodleDesc3 = document.createElement("DIV");
-			doodleDesc3.textContent = "STRENGTH: " + doodleDescriptions[index].strength;
+			doodleDesc3.textContent = "STRENGTH: " + doodleDescriptions[i].strength;
 			doodleDescTextDiv.appendChild(doodleDesc3);
 
 			const doodleDesc4 = document.createElement("DIV");
-			doodleDesc4.textContent = "BLOCKHURT: " + doodleDescriptions[index].blockHurt;
+			doodleDesc4.textContent = "BLOCKHURT: " + doodleDescriptions[i].blockHurt;
 			doodleDescTextDiv.appendChild(doodleDesc4); 
 
 			const doodleDesc5 = document.createElement("DIV");
-			doodleDesc5.textContent = doodleDescriptions[index].specialName;
+			doodleDesc5.textContent = doodleDescriptions[i].specialName;
 			doodleDescTextDiv.appendChild(doodleDesc5); 
 
 			const doodleDesc6 = document.createElement("DIV");
-			doodleDesc6.textContent = doodleDescriptions[index].special;
+			doodleDesc6.textContent = doodleDescriptions[i].special;
 			doodleDescTextDiv.appendChild(doodleDesc6);
 
 			doodleDescDiv.appendChild(doodleIcon);
 			doodleDescDiv.appendChild(doodleDescTextDiv);
 
 			doodleDescHome.appendChild(doodleDescDiv);
-		});
+		}
 	},
 	showArena () {
 		document.getElementById("arena-container").style.display = "flex";
