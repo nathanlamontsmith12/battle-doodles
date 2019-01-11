@@ -158,10 +158,7 @@ const doodleLibrary = [
 			}
 			if (!cP.batData.attacking) {
 				if (cP.batData.lastAttackHit) {
-					console.log(cP.batData.damage)
-					console.log(damMod)
 					cP.batData.damage = Math.floor(cP.batData.damage * damMod);
-					console.log(cP.batData.damage)
 				}
 			}
 		},
@@ -190,7 +187,7 @@ const doodleLibrary = [
 			}
 		},
 		clearSpecial () { },
-		natFacingRight: false,		
+		natFacingRight: null,		
 		src: "images/wedge-bug.png",
 		attackAnimation () { },	
 	},

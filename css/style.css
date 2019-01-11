@@ -283,9 +283,13 @@ body {
 }
 
 .messageWindow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	border-right: 2px solid black;
 	width: 70%;
 	height: 100%;
+
 }
 
 	/*	*/

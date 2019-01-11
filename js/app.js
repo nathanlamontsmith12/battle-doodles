@@ -9,20 +9,38 @@ class Doodle {
 		this.health = doodle.maxHealth;
 		this.maxHealth = doodle.maxHealth;
 		this.src = doodle.src;
+		this.id = doodle.id;
 		this.strength = doodle.strength;
 		this.setSpecial = doodle.setSpecial;
 		this.clearSpecial = doodle.clearSpecial;
 		this.blockHurt = doodle.blockHurt;
 		this.attackAnimation = doodle.attackAnimation; 
 		this.specHit = doodle.specHit;
+		this.natFacingRight = doodle.natFacingRight;
 		this.blockMod = 2;
 		this.poisoned = false;
 	}
 	draw () {
 		const image = document.createElement("IMG");
 		image.src = this.src;
+		image.id = `${this.id}`;
 		const location = document.getElementById("doodle-" + this.player.toString());
 		location.appendChild(image);
+		const imageToFlip = document.getElementById(this.id);
+		if (this.natFacingRight === null) {
+			return;
+		}
+		if (!this.natFacingRight && this.player === 1) {
+			imageToFlip.classList.add("rotated");
+		}
+		if (this.natFacingRight && this.player === 2) {
+			imageToFlip.classList.add("rotated");		
+		}
+		document.querySelectorAll(".rotated").forEach( (elem) => {
+			if (elem) {
+				elem.style.transform = "rotateY(180deg)";
+			}
+		})
 	}
 	erase () {
 		const imageToErase = document.querySelector(`#doodle-${this.player} img`);
@@ -30,8 +48,6 @@ class Doodle {
 	}
 	hitAnimation (incomingDam) {
 	
-		console.log(incomingDam);
-
 		const thisDoodle = document.querySelector(`#doodle-${this.player}`);
 
 		let jiggle; 
@@ -342,11 +358,11 @@ const game = {
 	canHeight: 40,
 	canWidth: 200,
 	players: [null],
+	fearCounter: 0,
 	poisonCounter: 0,
 	rIntHandle: null,
 	pIntHandle: null,
 	fIntHandle: null,
-	fearCounter: 0,
 	loadMenu () {
 		doodleArray.forEach( (elem, index) => {
 			const menuItem = document.createElement("DIV"); 
