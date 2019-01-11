@@ -21,6 +21,7 @@ const doodleLibrary = [
 						}
 						if (cE.doodle.poisoned) {
 							cE.doodle.health -= 5;
+							cE.doodle.hitAnimation(5);
 						}
 						game.poisonCounter--;
 					}, 1500);
@@ -126,12 +127,16 @@ const doodleLibrary = [
 		setSpecial () { 
 			const cP = game.players[this.player];
 			const cE = game.players[cP.currentEnemy];
-			cE.doodle.health = Math.floor(cE.doodle.health / 2);
+			const bigDam = Math.floor(cE.doodle.health / 2);
+			cE.doodle.health -= bigDam;
+			cE.doodle.hitAnimation(bigDam);
 		},
 		clearSpecial () { 
 			const cP = game.players[this.player];
 			const cE = game.players[cP.currentEnemy];
-			cE.doodle.health = Math.floor(cE.doodle.health / 2);
+			const bigDam = Math.floor(cE.doodle.health / 2);
+			cE.doodle.health -= bigDam;
+			cE.doodle.hitAnimation(bigDam);
 		},
 		natFacingRight: true,
 		src: "images/suave-box.png",
@@ -280,8 +285,8 @@ const doodleDescriptions = [
 		maxHealth: "80",
 		strength: "2",
 		blockHurt: "8",
-		specialName: "OBLIGATORY REGENERATION ABILITY",
-		special: "Regains lost health over time, up to its max health",
+		specialName: "OTHERWORLD ANATOMY",
+		special: "Regains lost health over time, up to its max health, but is worse than average at blocking",
 	},
 	{
 		name: "SUAVE BOX",

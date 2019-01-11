@@ -28,8 +28,27 @@ class Doodle {
 		const imageToErase = document.querySelector(`#doodle-${this.player} img`);
 		document.getElementById("doodle-" + this.player).removeChild(imageToErase);
 	}
-	hitAnimation () {
-		// when doodle takes damage, jiggle-shock the display based on the amount of damage taken 
+	hitAnimation (incomingDam) {
+	
+		console.log(incomingDam);
+
+		const thisDoodle = document.querySelector(`#doodle-${this.player}`);
+
+		let jiggle; 
+
+		if (!incomingDam) {
+			return;
+		}
+		jiggle = Math.floor(incomingDam * 1.5);
+		
+		if (jiggle > 90) {
+			jiggle = 90;
+		}
+		if (this.player === 1) {
+			thisDoodle.velocity({ marginRight: jiggle }, { loop: 1, duration: 50 }).velocity({ marginLeft: jiggle }, { loop: 1, duration: 150 });
+		} else {
+			thisDoodle.velocity({ marginLeft: jiggle }, { loop: 1, duration: 50 }).velocity({ marginRight: jiggle }, { loop: 1, duration: 150 });
+		}
 	}
 }
 
@@ -499,8 +518,10 @@ const battle = {
 		if (game.players[toPlayer].batData.blockActive) {
 			game.players[toPlayer].doodle.health -= Math.floor(damage / game.players[toPlayer].doodle.blockMod);
 			game.players[toPlayer].batData.blockActive = false;
+			game.players[toPlayer].doodle.hitAnimation(damage);
 		} else {
 			game.players[toPlayer].doodle.health -= damage;
+			game.players[toPlayer].doodle.hitAnimation(damage);
 		}
 	},
 	inputAttackFrom (player) {
@@ -516,6 +537,7 @@ const battle = {
 			currentPlayer.batData.block = false; 
 		} else {
 			currentPlayer.doodle.health -= currentPlayer.doodle.blockHurt;
+			currentPlayer.doodle.hitAnimation(currentPlayer.doodle.blockHurt);
 		}
 	}
 }
