@@ -65,9 +65,10 @@ class Doodle {
 			thisDoodle.velocity({ marginLeft: jiggle }, { loop: 1, duration: 50 }).velocity({ marginRight: jiggle }, { loop: 1, duration: 150 });
 		}
 	}
-	attackAnimation () {
+	attackAnimation (attDelay) {
 		const toAnimate = document.getElementById(`${this.id}`);
-		toAnimate.velocity({ paddingTop: 0 }, { duration: 300, } ).velocity( { paddingTop: 30 }, { duration: 50 } );
+		const riseDuration = attDelay - 50;
+		toAnimate.velocity({ paddingTop: 0 }, { duration: riseDuration, } ).velocity( { paddingTop: 30 }, { duration: 50 } );
 	}
 }
 
@@ -282,7 +283,9 @@ class BattleBar {
 		game.players[this.player].batData.dotF = true;
 	}
 	attackDelay () {
+
 		game.players[this.player].batData.active = false;
+
 		if (!game.players[this.player].batData.lastAttackHit) {
 			game.players[this.player].batData.delay = game.players[this.player].batData.delay + game.players[this.player].batData.minDelayMiss + Math.floor(Math.random()*(game.players[this.player].batData.maxDelayMiss - game.players[this.player].batData.minDelayMiss));
 		} else {
@@ -291,6 +294,10 @@ class BattleBar {
 
 		if (game.players[this.player].batData.delay > game.players[this.player].batData.maxDelay) {
 			game.players[this.player].batData.delay = game.players[this.player].batData.maxDelay;
+		}
+
+		if (game.players[this.player].batData.lastAttackHit) {
+			game.players[this.player].doodle.attackAnimation((game.players[this.player].batData.delay)*500); 
 		}
 
 		game.players[this.player].batData.delayHandle = setInterval(()=>{

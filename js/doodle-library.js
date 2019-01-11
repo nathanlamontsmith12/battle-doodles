@@ -304,8 +304,8 @@ const doodleDescriptions = [
 		maxHealth: "60",
 		strength: "2",
 		blockHurt: "2",
-		specialName: "CAT-BAT-LIKE REFLEXES",
-		special: "Hard to pin down, this doodle increases the delay between your opponent's attacks",
+		specialName: "FELINE LANGUOR",
+		special: "Though only half-cat, this doodle radiates an aura of sleepy indifference that slows down opponents",
 	},
 	{
 		name: "LIL' GUY",
