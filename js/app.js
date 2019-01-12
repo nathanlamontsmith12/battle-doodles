@@ -47,6 +47,8 @@ class Doodle {
 	}
 	hitAnimation (incomingDam) {
 	
+		game.players[this.player].checkHealth();
+		
 		const thisDoodle = document.querySelector(`#doodle-${this.player}`);
 
 		let jiggle; 
@@ -97,7 +99,7 @@ class Player {
 			maxDelayHit: 4,
 			minDelayMiss: 2,
 			maxDelayMiss: 6,
-			lastAttackHit: true,
+			lastAttackHit: false,
 			active: false,
 			width: game.canWidth,
 			height: game.canHeight,
@@ -125,10 +127,12 @@ class Player {
 		this.doodle.erase();
 		const dPImages = document.querySelectorAll(`#player-${this.player}-s-display .miniSelDisp`);
 		dPImages[0].remove();
-		this.getDoodle();
-		this.doodle.draw();
-		if (!this.doodle.specHit) {
-			this.doodle.setSpecial();
+		if (this.lives > 0) {
+			this.getDoodle();
+			this.doodle.draw();
+			if (!this.doodle.specHit) {
+				this.doodle.setSpecial();
+			}
 		}
 	} 
 	checkHealth () {
@@ -136,16 +140,16 @@ class Player {
 		if (this.doodle.health <= 0) {
 			this.lives--;
 			this.displayLives();
-			if (this.lives > 0) {
-				this.doodleKO();
-			}
+			this.doodleKO();
+			this.checkLives();
 		}
 		this.displayHealth();
 	}
 	checkLives () {
 		if (this.lives <= 0) {
-			alert(`Player ${this.currentEnemy} Wins!`);
-			location.reload();
+			const losingPlMessage = this.player.toString();
+			game.losingPlayer = "Player " + losingPlMessage;
+			game.checkGameOver();
 		}
 	}
 	displayHealth () {
@@ -365,6 +369,7 @@ const game = {
 	totLives: 3,
 	totPlayers: 2,
 	selections: [],
+	losingPlayer: null,
 	canHeight: 40,
 	canWidth: 200,
 	players: [null],
@@ -535,6 +540,13 @@ const game = {
 		allImages.forEach( (elem) => {
 			elem.style.opacity = 1;
 		})
+	},
+	checkGameOver () {
+		if (this.losingPlayer) {
+			stopAnimation();
+			alert(`All of ${this.losingPlayer.toUpperCase()}'s doodles have been KO'ed!`);
+			location.reload();
+		}
 	}
 }
 
@@ -757,17 +769,11 @@ function animateDot () {
 function startAnimation () {
 	animateBlock();
 	animateDot();
-	game.players.forEach( (elem) => {
-		if (elem) {
-			elem.checkHealth();
-			elem.checkLives();
-		}
-	});
 	game.globalAniHandle = window.requestAnimationFrame(startAnimation);
 }
 
 function stopAnimation () {
-	cancelAnimationFrame(animation.globalAniHandle);
+	cancelAnimationFrame(game.globalAniHandle);
 }
 
 // Start yer engines....
